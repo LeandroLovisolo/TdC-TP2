@@ -19,7 +19,7 @@ Lautaro José Petaccio  (LU 443/11) [lausuper@gmail.com](mailto:lausuper@gmail.c
 Requerimientos
 --------------
 
-Se requieren las siguientes bibliotecas para Python versión 2.x:
+Se requieren las siguientes bibliotecas Python versión 2.x:
 
 - scapy
 - pygeoip
@@ -30,3 +30,18 @@ Para instalar dichas dependencias en Arch Linux, basta con ejecutar los siguient
 
 `pacman -S python2-pip python2-pygeoip python2-matplotlib python2-basemap`
 `pip2 install scapy`
+
+Luego de instalar las bibliotecas Python es necesario bajar la base de datos de geolocación [Maxmind GeoLite City](http://dev.maxmind.com/geoip/legacy/geolite/), para lo que se provee un objetivo en el Makefile:
+
+`make download-geolocation-db`
+
+Uso
+---
+
+El script central es `traceroute.py`.
+
+Como ejemplo de uso, para hacer un traceroute a `www.google.com`, ejecutar lo siguiente como usuario root:
+
+`./traceroute.py www.google.com`
+
+El script imprime IPs, ubicación geográfica (cuando es posible), RTTs y ZRTTs para cada hop.
