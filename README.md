@@ -29,6 +29,7 @@ Se requieren las siguientes bibliotecas Python versión 2.x:
 Para instalar dichas dependencias en Arch Linux, basta con ejecutar los siguientes comandos como usuario root:
 
 `pacman -S python2-pip python2-pygeoip python2-matplotlib python2-basemap`
+
 `pip2 install scapy`
 
 Luego de instalar las bibliotecas Python es necesario bajar la base de datos de geolocación [Maxmind GeoLite City](http://dev.maxmind.com/geoip/legacy/geolite/), para lo que se provee un objetivo en el Makefile:
