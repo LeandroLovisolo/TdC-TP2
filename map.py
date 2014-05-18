@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 # encoding: utf-8
 
+import sys
 from mpl_toolkits.basemap import Basemap
 import numpy as np
 import matplotlib.pyplot as plt
@@ -8,17 +9,17 @@ import matplotlib.pyplot as plt
 def corners(lons, lats):
     w = max(lons) - min(lons)
     h = max(lats) - min(lats)
-    llcrnrlon = min(lons) - w * 0.05
-    llcrnrlat = min(lats) - h * 0.05
-    urcrnrlon = max(lons) + w * 0.05
-    urcrnrlat = max(lats) + h * 0.05
+    llcrnrlon = min(lons) - w * 0.1
+    llcrnrlat = min(lats) - h * 0.1
+    urcrnrlon = max(lons) + w * 0.1
+    urcrnrlat = max(lats) + h * 0.1
+
     return llcrnrlon, llcrnrlat, urcrnrlon, urcrnrlat
 
 def create_map(llcrnrlon, llcrnrlat, urcrnrlon, urcrnrlat):
     # create new figure, axes instances.
     fig = plt.figure()
     ax  = fig.add_axes([0.1, 0.1, 0.8, 0.8])
-    ax.set_title('Ruta desde X hacia Y')
 
     # setup mercator map projection.
     m = Basemap(llcrnrlon=llcrnrlon, llcrnrlat=llcrnrlat,
@@ -35,21 +36,37 @@ def plot_route(route, m):
     for place in route:
         if(lastplace == None): lastplace = place
         else:
-            m.drawgreatcircle(lastplace[0], lastplace[1],
-                              place[0], place[1],
-                              linewidth=2, color='b')
+            # draw line between lastplace and place
+            xx = []; yy = []
+            for p in [lastplace, place]:
+                x, y = m(p[0], p[1])
+                xx.append(x)
+                yy.append(y)
+            m.plot(xx, yy, linewidth=2, color='b')
+
+            # m.drawgreatcircle(lastplace[0], lastplace[1],
+            #                   place[0], place[1],
+            #                   linewidth=2,color='b')
+
+            # mark lastplace
+            x, y = m(lastplace[0], lastplace[1])
+            plt.text(x, y, lastplace[2])
+            m.plot(x, y, 'ro')
+
             lastplace = place
         
+        # mark final place
         x, y = m(place[0], place[1])
         plt.text(x, y, place[2])
-        m.plot(x, y, 'ro')    
+        m.plot(x, y, 'ro')
 
 if __name__ == '__main__':
-    route = [[-58.4005861, -34.618222 , 'Buenos Aires, Argentina'],
-             [-56.1927248,  -34.8837332, 'Montevideo, Uruguay'],
-             [-43.2630369, -22.9272733, 'Rio de Janeiro, Brazil'],
-             [-74.0323916, 40.7665059, 'New York, USA'],
-             [-122.4889645, 37.7267417, 'San Francisco, USA']]
+    route = []
+    for line in sys.stdin:
+        latitude  = float(line.split(' ')[0])
+        longitude = float(line.split(' ')[1])
+        city      = ' '.join(line.split(' ')[2:])
+        route.append([longitude, latitude, city])
 
     lons = map(lambda x: x[0], route)
     lats = map(lambda x: x[1], route)
