@@ -6,13 +6,12 @@ import socket
 import logging
 logging.getLogger('scapy.runtime').setLevel(logging.ERROR)
 from scapy.all import *
-from time import time
 from math import sqrt
 import pygeoip
 
-PACKAGES_PER_TTL = 50
+PACKAGES_PER_TTL = 100
 PACKAGE_TIMEOUT  = 1
-MAX_TTL          = 64
+MAX_TTL          = 30
 
 ###############################################################################
 # Traceroute                                                                  #
@@ -47,22 +46,24 @@ def extract_and_geolocate_srcs(ans, gi):
 
     return srcs
 
-def tracehop(hostname, ttl, gi):
+def tracehop(hostname, ttl, prev_artt, gi):
     try:
-        ans, unans = sr(IP(dst=hostname, ttl=ttl) / ICMP() * PACKAGES_PER_TTL,
+        ans, unans = sr(IP(dst=hostname, ttl=ttl) / UDP(dport=34334) * PACKAGES_PER_TTL,
                         verbose=0, timeout=PACKAGE_TIMEOUT)
 
         if len(ans) == 0:
             srcs = '*'
+            artt = '*'
             rtt  = '*'
             destination_reached = False
         else:
             srcs = extract_and_geolocate_srcs(ans, gi)
-            rtt  = avg_rtt(ans)
+            artt = avg_rtt(ans)
+            rtt  = artt - prev_artt
             # Check for ICMP echo reply
             destination_reached = True if ans[0][1].type == 0 else False
 
-        return {'hop': ttl, 'srcs': srcs, 'rtt': rtt}, destination_reached
+        return {'hop': ttl, 'srcs': srcs, 'artt': artt, 'rtt': rtt}, destination_reached
 
     except socket.error as e:
         sys.exit(e)
@@ -71,23 +72,25 @@ def traceroute(hostname, human):
     gi = pygeoip.GeoIP('data/GeoLiteCity.dat')
 
     hops = []
+    prev_artt = 0
 
-    for i in range(1, MAX_TTL):
-        hop, destination_reached = tracehop(hostname, i, gi)
+    for i in range(1, MAX_TTL + 1):
+        hop, destination_reached = tracehop(hostname, i, prev_artt, gi)
         hops.append(hop)
+        if hop['artt'] != '*': prev_artt = hop['artt']
 
         if human:
             if hop['srcs'] == '*':
-                print '%-3d hops away: no reply' % i
+                print '%3d hops away: no reply' % i
             else:
-                rtt = '%0.03f ms' % hop['rtt']
-                print '%-3d hops away: %-15s %-11s %s' % (i,
+                artt = '%0.03f ms' % hop['artt']
+                print '%3d hops away: %-15s  %11s  %s' % (i,
                                                           hop['srcs'][0]['ip'],
-                                                          rtt,
+                                                          artt,
                                                           hop['srcs'][0]['location'])
                 for i in range(1, len(hop['srcs'])):
-                    print '               %-27s %s' % (hop['srcs'][i]['ip'],
-                                                       hop['srcs'][i]['location'])
+                    print '               %-28s  %s' % (hop['srcs'][i]['ip'],
+                                                        hop['srcs'][i]['location'])
 
         if destination_reached:
             if human: print 'Destination reached.'
@@ -143,20 +146,22 @@ if __name__ == '__main__':
     # Display results for humans
     if human:
         print '\nStatistics:\n'
-        print 'Hop  IP Addresses    RTT         ZRTT     Location'
+        print 'Hop   IP Addresses             RTT  RTT (relative)  ZRTT (relative)  Location'
         for hop in exclude_noreply(hops):
-            rtt = '%0.03f ms' % hop['rtt']
-            print '%-3d  %-15s %-11s %-8.3f %s' % (hop['hop'],
-                                                   hop['srcs'][0]['ip'],
-                                                   rtt,
-                                                   zrtt(hop['rtt'], mu, sigma),
-                                                   hop['srcs'][0]['location'])
+            artt = '%0.03f ms' % hop['artt']
+            rtt  = '%0.03f ms' % hop['rtt']
+            print '%-3d   %-15s  %11s  %14s  %15.3f  %s' % (hop['hop'],
+                                                            hop['srcs'][0]['ip'],
+                                                            artt,
+                                                            rtt,
+                                                            zrtt(hop['rtt'], mu, sigma),
+                                                            hop['srcs'][0]['location'])
             for i in range(1, len(hop['srcs'])):
-                print '     %-36s %s' % (hop['srcs'][i]['ip'],
-                                         hop['srcs'][i]['location'])
+                print '      %-62s %s' % (hop['srcs'][i]['ip'],
+                                          hop['srcs'][i]['location'])
         print ''
-        print 'Mean RTT:       %0.3f ms' % mu
-        print 'Std. deviation: %0.3f ms' % sigma
+        print 'Mean RTT (relative): %9.3f ms' % mu
+        print 'Std. deviation:      %9.3f ms' % sigma
         print ''
 
     # Display results for machines
