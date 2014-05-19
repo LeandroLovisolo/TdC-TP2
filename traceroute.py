@@ -142,15 +142,16 @@ if __name__ == '__main__':
     # Display results for humans
     if human:
         print '\nStatistics:\n'
-        print 'Hop  IP Addresses    RTT      ZRTT     Location'
+        print 'Hop  IP Addresses    RTT         ZRTT     Location'
         for hop in exclude_noreply(hops):
-            print '%-3d  %-15s %-8.3f %-8.3f %s' % (hop['hop'],
-                                                    hop['srcs'][0]['ip'],
-                                                    hop['rtt'],
-                                                    zrtt(hop['rtt'], mu, sigma),
-                                                    hop['srcs'][0]['location'])
+            rtt = '%0.03f ms' % hop['rtt']
+            print '%-3d  %-15s %-11s %-8.3f %s' % (hop['hop'],
+                                                   hop['srcs'][0]['ip'],
+                                                   rtt,
+                                                   zrtt(hop['rtt'], mu, sigma),
+                                                   hop['srcs'][0]['location'])
             for i in range(1, len(hop['srcs'])):
-                print '     %-33s %s' % (hop['srcs'][i]['ip'],
+                print '     %-36s %s' % (hop['srcs'][i]['ip'],
                                          hop['srcs'][i]['location'])
         print ''
         print 'Mean RTT:       %0.3f ms' % mean(rtts)
