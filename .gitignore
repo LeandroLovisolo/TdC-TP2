@@ -1,6 +1,13 @@
 # MaxMind GeoIP City Database
 data/GeoLiteCity.dat
 
+# LaTeX
+tex/*.pdf
+tex/*.aux
+tex/*.log
+tex/*.toc
+tex/*.out
+
 # Sublime Text
 *.sublime-project
 *.sublime-workspace
