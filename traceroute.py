@@ -59,6 +59,7 @@ def tracehop(hostname, ttl, gi):
         else:
             srcs = extract_and_geolocate_srcs(ans, gi)
             rtt  = avg_rtt(ans)
+            # Check for ICMP echo reply
             destination_reached = True if ans[0][1].type == 0 else False
 
         return {'hop': ttl, 'srcs': srcs, 'rtt': rtt}, destination_reached
@@ -121,7 +122,7 @@ def zrtt(rtt, mu, sigma):
 
 def help():
     return 'Usage: %s [hostname]       for human-friendly output\n' \
-           '       %s [hostname] -m    for machine readable output' \
+           '       %s [hostname] -m    for machine-readable output' \
            % (sys.argv[0], sys.argv[0])
 
 if __name__ == '__main__':
@@ -154,10 +155,20 @@ if __name__ == '__main__':
                 print '     %-36s %s' % (hop['srcs'][i]['ip'],
                                          hop['srcs'][i]['location'])
         print ''
-        print 'Mean RTT:       %0.3f ms' % mean(rtts)
-        print 'Std. deviation: %0.3f ms' % stdev(rtts)
+        print 'Mean RTT:       %0.3f ms' % mu
+        print 'Std. deviation: %0.3f ms' % sigma
         print ''
 
     # Display results for machines
     else:
-        print 'Machine readable output not yet implemented.'
+        print '%f %f' % (mu, sigma)
+        for hop in exclude_noreply(hops):
+            print '%d %f %f %d' % (hop['hop'],
+                                   hop['rtt'],
+                                   zrtt(hop['rtt'], mu, sigma),
+                                   len(hop['srcs']))
+            for src in hop['srcs']:
+                print src['ip']
+                print src['location']
+                print src['latitude']
+                print src['longitude']
