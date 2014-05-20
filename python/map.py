@@ -20,7 +20,7 @@ def corners(lons, lats):
 def create_map(llcrnrlon, llcrnrlat, urcrnrlon, urcrnrlat):
     # create new figure, axes instances.
     fig = plt.figure()
-    ax  = fig.add_axes([0.1, 0.1, 0.8, 0.8])
+    fig.set_size_inches(6, 4) 
 
     # setup mercator map projection.
     m = Basemap(llcrnrlon=llcrnrlon, llcrnrlat=llcrnrlat,
@@ -29,6 +29,8 @@ def create_map(llcrnrlon, llcrnrlat, urcrnrlon, urcrnrlat):
 
     m.drawcoastlines()
     m.fillcontinents()
+
+    plt.tight_layout()
 
     return m
 
@@ -68,9 +70,6 @@ if __name__ == '__main__':
                          'font.size':         10,
                          'font.family':       'lmodern',
                          'text.latex.unicode': True} )
-
-    fig = plt.figure()
-    fig.set_size_inches(6, 4) 
 
     route = Route()
     route.load('/dev/stdin')

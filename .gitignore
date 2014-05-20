@@ -2,7 +2,6 @@
 data/GeoLiteCity.dat
 
 # LaTeX
-tex/*.pdf
 tex/*.aux
 tex/*.log
 tex/*.toc
