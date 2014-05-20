@@ -11,3 +11,6 @@ tex/*.out
 # Sublime Text
 *.sublime-project
 *.sublime-workspace
+
+# Python
+*.pyc
