@@ -4,21 +4,8 @@ import pygeoip
 class Geolocator:
     def __init__(self):
         self._gi    = pygeoip.GeoIP('data/GeoLiteCity.dat')
-        self._cache = {}
 
-    def location(self, ip):
-        if ip not in self._cache.keys(): self._geolocate(ip)
-        return self._cache[ip]['location']
-
-    def latitude(self, ip):
-        if ip not in self._cache.keys(): self._geolocate(ip)
-        return self._cache[ip]['latitude']
-
-    def longitude(self, ip):
-        if ip not in self._cache.keys(): self._geolocate(ip)
-        return self._cache[ip]['longitude']
-
-    def _geolocate(self, ip):
+    def geolocate(self, ip):
         gir = self._gi.record_by_addr(ip)
         if gir is None or gir['country_name'] is None:
             location = '*'
@@ -28,14 +15,22 @@ class Geolocator:
             location = '%s, %s' % (gir['city'], gir['country_name'])
         latitude  = '*' if gir is None else gir['latitude']
         longitude = '*' if gir is None else gir['longitude']
-        self._cache[ip] = {'location':  location,
-                           'latitude':  latitude,
-                           'longitude': longitude}
+        return location, latitude, longitude
+
+class Gateway:
+    def __init__(self, ip, geolocator):
+        location, latitude, longitude = geolocator.geolocate(ip)
+        self.ip        = ip
+        self.location  = location
+        self.latitude  = latitude
+        self.longitude = longitude
+        self.rtts      = []
 
 class Hop:
     def __init__(self, ttl, route, geolocator):
         self._ttl        = ttl
         self._noreply    = False
+        self._gateways   = {}
         self._replies    = {}
         self._route      = route
         self._geolocator = geolocator
@@ -48,12 +43,9 @@ class Hop:
         self._noreply = True
 
     def add_reply(self, ip, rtt):
-        if ip not in self._replies.keys():
-            self._replies[ip] = {'location':  self._geolocator.location(ip),
-                                 'latitude':  self._geolocator.latitude(ip),
-                                 'longitude': self._geolocator.longitude(ip),
-                                 'rtts':      []}
-        self._replies[ip]['rtts'].append(rtt)
+        if ip not in self._gateways.keys():
+            self._gateways[ip] = Gateway(ip, self._geolocator)
+        self._gateways[ip].rtts.append(rtt)
 
     ###########################################################################
     # Retrieval                                                               #
@@ -62,8 +54,18 @@ class Hop:
     def is_noreply(self):
         return self._noreply
 
-    def replies(self):
-        return self._replies
+    def gateway_ips(self):
+        return self._gateways.keys()
+
+    def gateway(self, ip):
+        return self._gateways[ip]
+
+    def main_gateway(self):
+        main = None
+        for gateway in self._gateways.values():
+            if main is None or len(gateway.rtts) > len(main.rtts):
+                main = gateway
+        return main
 
     ###########################################################################
     # Statistics                                                              #
@@ -72,10 +74,9 @@ class Hop:
     def abs_rtt(self):
         total = 0
         n = 0
-        for ip in self._replies.keys():
-            for rtt in self._replies[ip]['rtts']:
-                total += rtt
-                n += 1
+        for ip in self.gateway_ips():
+            total += sum(self.gateway(ip).rtts)
+            n += len(self.gateway(ip).rtts)
         return total / n
 
     def abs_zrtt(self):
@@ -159,6 +160,6 @@ class Route:
                 if self[ttl].is_noreply():
                     f.write('%d *\n' % ttl)
                 else:
-                    for ip in self[ttl].replies().keys():
-                        for rtt in self[ttl].replies()[ip]['rtts']:
+                    for ip in self[ttl].gateway_ips():
+                        for rtt in self[ttl].gateway(ip).rtts:
                             f.write('%d %s %f\n' % (ttl, ip, rtt))
