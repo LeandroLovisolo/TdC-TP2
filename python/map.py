@@ -1,11 +1,8 @@
 #!/usr/bin/env python2
 # encoding: utf-8
 
-import sys
+from plot import plot_main
 from mpl_toolkits.basemap import Basemap
-import numpy as np
-import matplotlib.pyplot as plt
-from route import Route
 
 def corners(lons, lats):
     w = max(lons) - min(lons)
@@ -14,24 +11,14 @@ def corners(lons, lats):
     llcrnrlat = min(lats) - h * 0.1
     urcrnrlon = max(lons) + w * 0.1
     urcrnrlat = max(lats) + h * 0.1
-
     return llcrnrlon, llcrnrlat, urcrnrlon, urcrnrlat
 
 def create_map(llcrnrlon, llcrnrlat, urcrnrlon, urcrnrlat):
-    # create new figure, axes instances.
-    fig = plt.figure()
-    fig.set_size_inches(6, 4) 
-
-    # setup mercator map projection.
     m = Basemap(llcrnrlon=llcrnrlon, llcrnrlat=llcrnrlat,
                 urcrnrlon=urcrnrlon, urcrnrlat=urcrnrlat,
                 projection='merc')
-
     m.drawcoastlines()
     m.fillcontinents()
-
-    plt.tight_layout()
-
     return m
 
 def plot_route(gateways, m):
@@ -64,16 +51,7 @@ def plot_route(gateways, m):
         # plt.text(x, y, gateway.location)
         m.plot(x, y, 'ro')
 
-if __name__ == '__main__':
-    plt.rcParams['text.latex.preamble']=[r'\usepackage{lmodern}']
-    plt.rcParams.update({'text.usetex':       True,
-                         'font.size':         10,
-                         'font.family':       'lmodern',
-                         'text.latex.unicode': True} )
-
-    route = Route()
-    route.load('/dev/stdin')
-
+def plot(plt, fig, route):
     gateways = []
     for ttl in route.ttls(exclude_noreplies=True):
         if route[ttl].main_gateway().has_location():
@@ -89,4 +67,7 @@ if __name__ == '__main__':
     
     plot_route(gateways, m)
 
-    plt.show()
+    fig.set_size_inches(6, 4) 
+
+if __name__ == '__main__':
+    plot_main(plot)

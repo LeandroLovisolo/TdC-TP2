@@ -15,14 +15,17 @@ informe.pdf: tex/informe.tex
 graficos: graficos-oxford graficos-sydney graficos-must
 
 graficos-oxford:
+	cat traces/www.ox.ac.uk | ./map -o tex/map-www.ox.ac.uk.pdf
 	cat traces/www.ox.ac.uk | ./rttchart -o tex/rtt-www.ox.ac.uk.pdf
 	cat traces/www.ox.ac.uk | ./zrttchart -o tex/zrtt-www.ox.ac.uk.pdf
 
 graficos-sydney:
+	cat traces/www.sydney.edu.au | ./map -o tex/map-www.sydney.edu.au.pdf
 	cat traces/www.sydney.edu.au | ./rttchart -o tex/rtt-www.sydney.edu.au.pdf
 	cat traces/www.sydney.edu.au | ./zrttchart -o tex/zrtt-www.sydney.edu.au.pdf
 
 graficos-must:
+	cat traces/www.must.edu.my | ./map -o tex/map-www.must.edu.my.pdf
 	cat traces/www.must.edu.my | ./rttchart -o tex/rtt-www.must.edu.my.pdf
 	cat traces/www.must.edu.my | ./zrttchart -o tex/zrtt-www.must.edu.my.pdf
 
