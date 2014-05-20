@@ -26,7 +26,7 @@ def destination_reached(ans):
 # Returns True if the destination is reached or False otherwise
 def tracehop(hostname, ttl, route):
     try:
-        ans, unans = sr(IP(dst=hostname, ttl=ttl) / UDP(dport=34334) * PACKETS_PER_TTL,
+        ans, unans = sr(IP(dst=hostname, ttl=ttl) / ICMP() * PACKETS_PER_TTL,
                         verbose=0, timeout=PACKET_TIMEOUT)
 
         # No packets answered
