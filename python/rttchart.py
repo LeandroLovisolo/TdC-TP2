@@ -21,7 +21,7 @@ if __name__ == '__main__':
     plt.rcParams.update({'text.usetex':       True,
                          'font.size':         10,
                          'font.family':       'lmodern',
-                         'text.latex.unicode': True} )
+                         'text.latex.unicode': True})
 
     fig = plt.figure()
     fig.set_size_inches(6, 4) 
