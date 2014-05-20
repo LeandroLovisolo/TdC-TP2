@@ -6,8 +6,7 @@ import socket
 import logging
 logging.getLogger('scapy.runtime').setLevel(logging.ERROR)
 from scapy.all import *
-from math import sqrt
-import pygeoip
+from route import Route
 
 PACKAGES_PER_TTL = 100
 PACKAGE_TIMEOUT  = 1
@@ -17,107 +16,52 @@ MAX_TTL          = 30
 # Traceroute                                                                  #
 ###############################################################################
 
-def avg_rtt(ans):
-    rtt_total = 0
-    for i in range(0, len(ans)):
-        rtt_total += ans[i][1].time - ans[i][0].sent_time
-    return rtt_total / len(ans) * 1000
-
-def extract_and_geolocate_srcs(ans, gi):
-    srcs = [] # [{'ip': '4.69.138.123', 'location': '*', 'latitude': '*', 'longitude': '*'}]
-
-    for i in range(0, len(ans)):
-        ip  = ans[i][1].src
-        gir = gi.record_by_addr(ip)
-
-        if gir is None or gir['country_name'] is None:
-            location = '*'
-        elif gir['city'] is None:
-            location = gir['country_name']
-        else:
-            location = '%s, %s' % (gir['city'], gir['country_name'])
-
-        src = {'ip':        ip,
-               'location':  location,
-               'latitude':  '*' if gir is None else gir['latitude'],
-               'longitude': '*' if gir is None else gir['longitude']}
-
-        if src not in srcs: srcs.append(src)
-
-    return srcs
-
-def tracehop(hostname, ttl, prev_artt, gi):
+# Returns True if the destination is reached or False otherwise
+def tracehop(hostname, ttl, route):
     try:
         ans, unans = sr(IP(dst=hostname, ttl=ttl) / UDP(dport=34334) * PACKAGES_PER_TTL,
                         verbose=0, timeout=PACKAGE_TIMEOUT)
 
         if len(ans) == 0:
-            srcs = '*'
-            artt = '*'
-            rtt  = '*'
+            route[ttl].noreply()
             destination_reached = False
         else:
-            srcs = extract_and_geolocate_srcs(ans, gi)
-            artt = avg_rtt(ans)
-            rtt  = artt - prev_artt
+            for i in range(0, len(ans)):
+                ip  = ans[i][1].src
+                rtt = (ans[i][1].time - ans[i][0].sent_time) * 1000
+                route[ttl].add_reply(ip, rtt)
             # Check for ICMP echo reply
             destination_reached = True if ans[0][1].type == 0 else False
 
-        return {'hop': ttl, 'srcs': srcs, 'artt': artt, 'rtt': rtt}, destination_reached
+        return destination_reached
 
     except socket.error as e:
         sys.exit(e)
 
 def traceroute(hostname, human):
-    gi = pygeoip.GeoIP('data/GeoLiteCity.dat')
+    route = Route()
 
-    hops = []
-    prev_artt = 0
-
-    for i in range(1, MAX_TTL + 1):
-        hop, destination_reached = tracehop(hostname, i, prev_artt, gi)
-        hops.append(hop)
-        if hop['artt'] != '*': prev_artt = hop['artt']
+    for ttl in range(1, MAX_TTL + 1):
+        destination_reached = tracehop(hostname, ttl, route)
 
         if human:
-            if hop['srcs'] == '*':
-                print '%3d hops away: no reply' % i
+            if route[ttl].is_noreply():
+                print '%3d hops away: no reply' % ttl
             else:
-                artt = '%0.03f ms' % hop['artt']
-                print '%3d hops away: %-15s  %11s  %s' % (i,
-                                                          hop['srcs'][0]['ip'],
-                                                          artt,
-                                                          hop['srcs'][0]['location'])
-                for i in range(1, len(hop['srcs'])):
-                    print '               %-28s  %s' % (hop['srcs'][i]['ip'],
-                                                        hop['srcs'][i]['location'])
+                ips     = route[ttl].replies().keys()
+                abs_rtt = '%0.03f ms' % route[ttl].abs_rtt()
+                print '%3d hops away: %-15s  %11s  %s' % (ttl,
+                                                          ips[0],
+                                                          abs_rtt,
+                                                          route[ttl].replies()[ips[0]]['location'])
+                for ip in ips[1:]:
+                    print '               %-28s  %s' % (ip, route[ttl].replies()[ip]['location'])
 
         if destination_reached:
             if human: print 'Destination reached.'
             break
 
-    return hops
-
-###############################################################################
-# Statistics                                                                  #
-###############################################################################
-
-def exclude_noreply(hops):
-    return filter(lambda x: x['srcs'] != '*', hops)
-
-def extract_rtts(hops):
-    return map(lambda x: x['rtt'], exclude_noreply(hops))
-
-def mean(rtts):
-    return sum(rtts) / len(rtts)
-
-def stdev(rtts):
-    n  = len(rtts)
-    mu = mean(rtts)
-    return sqrt(sum([(rtt - mu)**2 for rtt in rtts]) / n)
-
-def zrtt(rtt, mu, sigma):
-    return (rtt - mu) / sigma
+    return route
 
 ###############################################################################
 # Main                                                                        #
@@ -136,44 +80,32 @@ if __name__ == '__main__':
     human    = len(sys.argv) == 2
 
     # Do the actual traceroute 
-    hops = traceroute(hostname, human)
-
-    # Compute statistics
-    rtts  = extract_rtts(hops)
-    mu    = mean(rtts)
-    sigma = stdev(rtts)
+    route = traceroute(hostname, human)
 
     # Display results for humans
     if human:
         print '\nStatistics:\n'
-        print 'Hop   IP Addresses             RTT  RTT (relative)  ZRTT (relative)  Location'
-        for hop in exclude_noreply(hops):
-            artt = '%0.03f ms' % hop['artt']
-            rtt  = '%0.03f ms' % hop['rtt']
-            print '%-3d   %-15s  %11s  %14s  %15.3f  %s' % (hop['hop'],
-                                                            hop['srcs'][0]['ip'],
-                                                            artt,
-                                                            rtt,
-                                                            zrtt(hop['rtt'], mu, sigma),
-                                                            hop['srcs'][0]['location'])
-            for i in range(1, len(hop['srcs'])):
-                print '      %-62s %s' % (hop['srcs'][i]['ip'],
-                                          hop['srcs'][i]['location'])
+        print 'TTL   IP Addresses    Absolute RTT    Relative RTT    Relative ZRTT  Location'
+        for ttl in route.ttls(exclude_noreplies=True):
+            ips     = route[ttl].replies().keys()
+            abs_rtt = '%0.03f ms' % route[ttl].abs_rtt()
+            rel_rtt = '%0.03f ms' % route[ttl].rel_rtt()
+            print '%-3d   %-15s  %11s  %14s  %15.3f  %s' % (ttl,
+                                                            ips[0],
+                                                            abs_rtt,
+                                                            rel_rtt,
+                                                            route[ttl].rel_zrtt(),
+                                                            route[ttl].replies()[ips[0]]['location'])
+            for ip in ips[1:]:
+                print '      %-62s %s' % (ip, route[ttl].replies()[ip]['location'])
         print ''
-        print 'Mean RTT (relative): %9.3f ms' % mu
-        print 'Std. deviation:      %9.3f ms' % sigma
+        print 'Absolute RTT mean:           %9.3f ms' % route.abs_rtt_mean()
+        print 'Absolute RTT std. deviation: %9.3f ms' % route.abs_rtt_stdev()
+        print ''
+        print 'Relative RTT mean:           %9.3f ms' % route.rel_rtt_mean()
+        print 'Relative RTT std. deviation: %9.3f ms' % route.rel_rtt_stdev()
         print ''
 
     # Display results for machines
     else:
-        print '%f %f' % (mu, sigma)
-        for hop in exclude_noreply(hops):
-            print '%d %f %f %d' % (hop['hop'],
-                                   hop['rtt'],
-                                   zrtt(hop['rtt'], mu, sigma),
-                                   len(hop['srcs']))
-            for src in hop['srcs']:
-                print src['ip']
-                print src['location']
-                print src['latitude']
-                print src['longitude']
+       route.save('/dev/stdout')
