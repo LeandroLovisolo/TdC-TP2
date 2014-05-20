@@ -26,6 +26,11 @@ class Gateway:
         self.longitude = longitude
         self.rtts      = []
 
+    def has_location(self):
+        return self.location  != '*' and \
+               self.latitude  != '*' and \
+               self.longitude != '*'
+
 class Hop:
     def __init__(self, ttl, route, geolocator):
         self._ttl        = ttl
