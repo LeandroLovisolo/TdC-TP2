@@ -10,7 +10,7 @@ from route import Route
 
 PACKETS_PER_TTL = 100
 PACKET_TIMEOUT  = 1
-MAX_TTL          = 30
+MAX_TTL         = 30
 
 ###############################################################################
 # Traceroute                                                                  #
