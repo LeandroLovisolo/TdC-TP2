@@ -39,10 +39,10 @@ Luego de instalar las bibliotecas Python es necesario bajar la base de datos de 
 Uso
 ---
 
-El script central es `traceroute.py`.
+El script central es `traceroute`.
 
 Como ejemplo de uso, para hacer un traceroute a `www.google.com`, ejecutar lo siguiente como usuario root:
 
-`./traceroute.py www.google.com`
+`./traceroute www.google.com`
 
 El script imprime IPs, ubicación geográfica (cuando es posible), RTTs y ZRTTs para cada hop.
