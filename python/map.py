@@ -67,6 +67,7 @@ def plot(plt, fig, route):
     
     plot_route(gateways, m)
 
+    plt.title('Ruta principal')
     fig.set_size_inches(6, 4) 
 
 if __name__ == '__main__':

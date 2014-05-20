@@ -1,0 +1,31 @@
+
+Statistics:
+
+TTL   IP Addresses    Absolute RTT    Relative RTT    Relative ZRTT  Location
+1     192.168.1.1         1.165 ms        1.165 ms           -0.256  *
+3     190.194.57.1      167.355 ms      166.191 ms            2.305  Avellaneda, Argentina
+5     200.89.165.157     35.586 ms     -131.770 ms           -2.319  Argentina
+6     200.89.165.130     22.441 ms      -13.145 ms           -0.478  Argentina
+9     200.89.164.217     28.177 ms        5.736 ms           -0.185  Argentina
+10    200.89.165.222     21.571 ms       -6.606 ms           -0.377  Argentina
+11    159.63.53.213      24.123 ms        2.552 ms           -0.234  United States
+12    67.16.139.18      149.151 ms      125.028 ms            1.666  United States
+13    129.250.9.117     203.216 ms       54.065 ms            0.565  Englewood, United States
+14    129.250.3.172     177.313 ms      -25.903 ms           -0.676  Englewood, United States
+15    129.250.3.174     178.372 ms        1.059 ms           -0.258  Englewood, United States
+16    129.250.2.59      189.240 ms       10.867 ms           -0.105  Englewood, United States
+17    129.250.4.25      213.865 ms       24.625 ms            0.108  Englewood, United States
+18    129.250.5.57      266.864 ms       52.999 ms            0.548  Englewood, United States
+19    129.250.4.118     232.886 ms      -33.978 ms           -0.801  Englewood, United States
+20    140.174.28.138    361.311 ms      128.425 ms            1.719  Englewood, United States
+21    202.158.194.176   352.218 ms       -9.093 ms           -0.415  Australia
+22    113.197.15.57     355.732 ms        3.514 ms           -0.219  Australia
+23    202.158.205.165   396.616 ms       40.884 ms            0.360  Australia
+24    113.197.9.186     353.190 ms      -43.426 ms           -0.948  Lidcombe, Australia
+
+Absolute RTT mean:             186.520 ms
+Absolute RTT std. deviation:   129.001 ms
+
+Relative RTT mean:              17.659 ms
+Relative RTT std. deviation:    64.445 ms
+

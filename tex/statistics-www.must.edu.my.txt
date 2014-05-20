@@ -1,0 +1,30 @@
+
+Statistics:
+
+TTL   IP Addresses    Absolute RTT    Relative RTT    Relative ZRTT  Location
+1     192.168.1.1         1.405 ms        1.405 ms           -0.216  *
+5     200.89.164.77      19.820 ms       18.415 ms           -0.010  Argentina
+6     200.89.165.197    -87.159 ms     -106.979 ms           -1.533  Argentina
+      190.194.57.1                                                   Avellaneda, Argentina
+9     200.89.165.233     19.480 ms      106.639 ms            1.062  Argentina
+10    200.89.165.222     19.737 ms        0.257 ms           -0.230  Argentina
+11    208.178.195.205    21.318 ms        1.581 ms           -0.214  Alexandria, United States
+12    67.16.129.202     268.221 ms      246.902 ms            2.766  United States
+13    67.17.192.6       164.672 ms     -103.549 ms           -1.491  United States
+14    203.208.171.145   160.752 ms       -3.920 ms           -0.281  Singapore
+15    203.208.151.85    342.632 ms      181.880 ms            1.976  Singapore
+16    203.208.182.37    330.936 ms      -11.696 ms           -0.376  Singapore
+17    203.208.174.82    344.699 ms       13.764 ms           -0.066  Singapore
+18    124.158.224.45    351.762 ms        7.063 ms           -0.148  Malaysia
+19    61.11.210.1       339.585 ms      -12.177 ms           -0.381  Malaysia
+20    61.11.210.175     351.087 ms       11.502 ms           -0.094  Malaysia
+21    124.158.228.58    349.154 ms       -1.933 ms           -0.257  Malaysia
+22    110.4.44.250      351.818 ms        2.664 ms           -0.201  Penang, Malaysia
+23    110.4.45.250      346.011 ms       -5.807 ms           -0.304  Penang, Malaysia
+
+Absolute RTT mean:             205.329 ms
+Absolute RTT std. deviation:   157.883 ms
+
+Relative RTT mean:              19.223 ms
+Relative RTT std. deviation:    82.324 ms
+
