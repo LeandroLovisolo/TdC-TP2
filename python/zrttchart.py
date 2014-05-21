@@ -14,7 +14,7 @@ def plot(plt, fig, route):
 
     y_pos = np.arange(len(gateways))
     plt.barh(y_pos, zrtts, align='center', alpha=0.4)
-    plt.yticks(y_pos, gateways, horizontalalignment='right')
+    plt.yticks(y_pos, gateways, horizontalalignment='right', fontsize=9)
     plt.title('ZRTTs para cada gateway')
     plt.xlabel('ZRTT')
     plt.ylabel('Gateway')
@@ -27,7 +27,7 @@ def plot(plt, fig, route):
     plt.text(threshold, len(gateways) - 1, 'Umbral', rotation='vertical',
              verticalalignment='top', horizontalalignment='right')
 
-    fig.set_size_inches(6, 9) 
+    fig.set_size_inches(6, 10) 
 
 if __name__ == '__main__':
     plot_main(plot)

@@ -13,7 +13,7 @@ def plot(plt, fig, route):
 
     y_pos = np.arange(len(gateways))
     plt.barh(y_pos, rtts, align='center', alpha=0.4)
-    plt.yticks(y_pos, gateways, horizontalalignment='right')
+    plt.yticks(y_pos, gateways, horizontalalignment='right', fontsize=9)
     plt.title('RTTs para cada gateway')
     plt.xlabel('RTT (ms)')
     plt.ylabel('Gateway')
@@ -23,7 +23,7 @@ def plot(plt, fig, route):
     plt.text(route.abs_rtt_mean(), len(gateways) - 1, 'Media', rotation='vertical',
              verticalalignment='top', horizontalalignment='right')
 
-    fig.set_size_inches(6, 9) 
+    fig.set_size_inches(6, 10) 
 
 if __name__ == '__main__':
     plot_main(plot)
