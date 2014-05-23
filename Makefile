@@ -9,10 +9,16 @@ all: graphics statistics informe.pdf
 clean:
 	rm -f informe.pdf tex/*.aux tex/*.log tex/*.toc
 
-informe.pdf: tex/informe.tex
-	cd tex; pdflatex -interaction=nonstopmode -halt-on-error informe.tex && \
-	        pdflatex -interaction=nonstopmode -halt-on-error informe.tex
-	mv tex/informe.pdf .
+traces: trace-oxford trace-sydney trace-must
+	
+trace-oxford:
+	./traceroute www.ox.ac.uk -t 3600 -o traces/www.ox.ac.uk
+
+trace-sydney:
+	./traceroute wwww.sydney.edu.au -t 3600 -o traces/www.sydney.edu.au
+
+trace-must:
+	./traceroute www.must.edu.my -t 3600 -o traces/www.must.edu.my
 
 graphics: graphics-oxford graphics-sydney graphics-must
 
@@ -36,16 +42,10 @@ statistics:
 	cat traces/www.sydney.edu.au | ./statistics > tex/statistics-www.sydney.edu.au.txt
 	cat traces/www.must.edu.my   | ./statistics > tex/statistics-www.must.edu.my.txt
 
-traces: trace-oxford trace-sydney trace-must
-	
-trace-oxford:
-	./traceroute www.ox.ac.uk -t 3600 -o traces/www.ox.ac.uk
-
-trace-sydney:
-	./traceroute wwww.sydney.edu.au -t 3600 -o traces/www.sydney.edu.au
-
-trace-must:
-	./traceroute www.must.edu.my -t 3600 -o traces/www.must.edu.my
+informe.pdf: tex/informe.tex
+	cd tex; pdflatex -interaction=nonstopmode -halt-on-error informe.tex && \
+	        pdflatex -interaction=nonstopmode -halt-on-error informe.tex
+	mv tex/informe.pdf .
 
 download-geolocation-db:
 	wget -P data/ -N $(GEO_LITE_CITY_URL)
