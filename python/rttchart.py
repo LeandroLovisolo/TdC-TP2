@@ -6,10 +6,12 @@ import numpy as np
 
 def plot(plt, fig, route):
     gateways, rtts = [], []
-    for ttl in reversed(route.ttls(exclude_noreplies=True)):
+    for ttl in route.ttls(exclude_noreply=True, limit_to_destination=True):
         gateways.append('%s\n%s' % (route[ttl].main_gateway().ip,
                                     route[ttl].main_gateway().location))
         rtts.append(route[ttl].abs_rtt())
+    gateways.reverse()
+    rtts .reverse()
 
     y_pos = np.arange(len(gateways))
     plt.barh(y_pos, rtts, align='center', alpha=0.4)

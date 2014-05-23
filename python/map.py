@@ -53,7 +53,7 @@ def plot_route(gateways, m):
 
 def plot(plt, fig, route):
     gateways = []
-    for ttl in route.ttls(exclude_noreplies=True):
+    for ttl in route.ttls(exclude_noreply=True, limit_to_destination=True):
         if route[ttl].main_gateway().has_location():
             gateways.append(route[ttl].main_gateway())
 

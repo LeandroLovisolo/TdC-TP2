@@ -17,6 +17,11 @@ class Geolocator:
         longitude = '*' if gir is None else gir['longitude']
         return location, latitude, longitude
 
+class Reply:
+    def __init__(self, type, rtt):
+        self.type = type
+        self.rtt  = rtt
+
 class Gateway:
     def __init__(self, ip, geolocator):
         location, latitude, longitude = geolocator.geolocate(ip)
@@ -24,7 +29,7 @@ class Gateway:
         self.location  = location
         self.latitude  = latitude
         self.longitude = longitude
-        self.rtts      = []
+        self.replies   = []
 
     def has_location(self):
         return self.location  != '*' and \
@@ -44,20 +49,17 @@ class Hop:
     # Insertion                                                               #
     ###########################################################################
 
-    def noreply(self):
-        self._noreply = True
-
-    def add_reply(self, ip, rtt):
+    def add_reply(self, ip, type, rtt):
         if ip not in self._gateways.keys():
             self._gateways[ip] = Gateway(ip, self._geolocator)
-        self._gateways[ip].rtts.append(rtt)
+        self._gateways[ip].replies.append(Reply(type, rtt))
 
     ###########################################################################
     # Retrieval                                                               #
     ###########################################################################
 
     def is_noreply(self):
-        return self._noreply
+        return len(self._gateways) == 0
 
     def gateway_ips(self):
         return self._gateways.keys()
@@ -68,9 +70,12 @@ class Hop:
     def main_gateway(self):
         main = None
         for gateway in self._gateways.values():
-            if main is None or len(gateway.rtts) > len(main.rtts):
+            if main is None or len(gateway.replies) > len(main.replies):
                 main = gateway
         return main
+
+    def is_destination(self):
+        return self.main_gateway().ip == self._route.dst_ip
 
     ###########################################################################
     # Statistics                                                              #
@@ -80,9 +85,9 @@ class Hop:
         total = 0
         n = 0
         for ip in self.gateway_ips():
-            total += sum(self.gateway(ip).rtts)
-            n += len(self.gateway(ip).rtts)
-        return total / n
+            total += sum([reply.rtt for reply in self.gateway(ip).replies])
+            n += len(self.gateway(ip).replies)
+        return 0 if n == 0 else total / n
 
     def abs_zrtt(self):
         return (self.abs_rtt() - self._route.abs_rtt_mean()) / self._route.abs_rtt_stdev()
@@ -99,7 +104,8 @@ class Hop:
         return (self.rel_rtt() - self._route.rel_rtt_mean()) / self._route.rel_rtt_stdev()
 
 class Route:
-    def __init__(self):
+    def __init__(self, dst_ip=None, max_ttl=None):
+        self.dst_ip      = dst_ip
         self._hops       = {}
         self._geolocator = Geolocator()
 
@@ -112,15 +118,20 @@ class Route:
             self._hops[ttl] = Hop(ttl, self, self._geolocator)
         return self._hops[ttl]
 
-    def ttls(self, exclude_noreplies=False):
-        if exclude_noreplies:
-            ttls = []
-            for ttl in self._hops.keys():
-                if not self[ttl].is_noreply():
-                    ttls.append(ttl)
-        else:
-            ttls = self._hops.keys()
+    def ttls(self, exclude_noreply=False, limit_to_destination=False):
+        ttls = self._hops.keys()
         ttls.sort()
+
+        if exclude_noreply:
+            ttls = [ttl for ttl in ttls if not self[ttl].is_noreply()]
+
+        if limit_to_destination:
+            limited_ttls = []
+            for ttl in ttls:
+                limited_ttls.append(ttl)
+                if self[ttl].is_destination(): break
+            ttls = limited_ttls
+
         return ttls
 
     ###########################################################################
@@ -128,21 +139,21 @@ class Route:
     ###########################################################################
 
     def abs_rtt_mean(self):
-        ttls = self.ttls(exclude_noreplies=True)
+        ttls = self.ttls()
         return sum([self[ttl].abs_rtt() for ttl in ttls]) / len(ttls)
 
     def abs_rtt_stdev(self):
         mu = self.abs_rtt_mean()
-        ttls = self.ttls(exclude_noreplies=True)
+        ttls = self.ttls()
         return sqrt(sum([(self[ttl].abs_rtt() - mu)**2 for ttl in ttls]) / len(ttls))
 
     def rel_rtt_mean(self):
-        ttls = self.ttls(exclude_noreplies=True)
+        ttls = self.ttls()
         return sum([self[ttl].rel_rtt() for ttl in ttls]) / len(ttls)
 
     def rel_rtt_stdev(self):
         mu = self.rel_rtt_mean()
-        ttls = self.ttls(exclude_noreplies=True)
+        ttls = self.ttls()
         return sqrt(sum([(self[ttl].rel_rtt() - mu)**2 for ttl in ttls]) / len(ttls))
 
     ###########################################################################
@@ -150,21 +161,23 @@ class Route:
     ###########################################################################
 
     def load(self, path):
+        first = True
         for line in open(path):
-            line = line.strip().split(' ')
-            ttl  = int(line[0])
-            if line[1] == '*': self[ttl].noreply()
+            if first:
+                self.dst_ip = line.strip()
+                first = False
             else:
-                ip  = line[1]
-                rtt = float(line[2])
-                self[ttl].add_reply(ip, rtt)
+                line = line.strip().split(' ')
+                ttl  = int(line[0])
+                ip   = line[1]
+                type = int(line[2])
+                rtt = float(line[3])
+                self[ttl].add_reply(ip, type, rtt)
 
     def save(self, path):
         with open(path, 'w') as f:
+            f.write('%s\n' % self.dst_ip)
             for ttl in self.ttls():
-                if self[ttl].is_noreply():
-                    f.write('%d *\n' % ttl)
-                else:
-                    for ip in self[ttl].gateway_ips():
-                        for rtt in self[ttl].gateway(ip).rtts:
-                            f.write('%d %s %f\n' % (ttl, ip, rtt))
+                for ip in self[ttl].gateway_ips():
+                    for reply in self[ttl].gateway(ip).replies:
+                        f.write('%d %s %d %f\n' % (ttl, ip, reply.type, reply.rtt))
