@@ -1,7 +1,8 @@
 GEO_LITE_CITY_URL=http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
 
 .PHONY: all clean informe.pdf graphics graphics-oxford graphics-sydney graphics-must \
-	    statistics download-geolocation-db
+	    statistics traces trace-oxford trace-sydney trace-must \
+            download-geolocation-db
 
 all: graphics statistics informe.pdf
 
@@ -35,7 +36,16 @@ statistics:
 	cat traces/www.sydney.edu.au | ./statistics > tex/statistics-www.sydney.edu.au.txt
 	cat traces/www.must.edu.my   | ./statistics > tex/statistics-www.must.edu.my.txt
 
+traces: trace-oxford trace-sydney trace-must
+	
+trace-oxford:
+	./traceroute www.ox.ac.uk -t 3600 -o traces/www.ox.ac.uk
 
+trace-sydney:
+	./traceroute wwww.sydney.edu.au -t 3600 -o traces/www.sydney.edu.au
+
+trace-must:
+	./traceroute www.must.edu.my -t 3600 -o traces/www.must.edu.my
 
 download-geolocation-db:
 	wget -P data/ -N $(GEO_LITE_CITY_URL)
