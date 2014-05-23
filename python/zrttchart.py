@@ -22,7 +22,7 @@ def plot(plt, fig, route):
     plt.ylabel('Gateway')
 
     # Line at y=0
-    plt.vlines(0, -1, len(gateways))
+    plt.vlines(0, -1, len(gateways), alpha=0.4)
 
     # ZRTT threshold
     plt.vlines(threshold, -1, len(gateways), linestyle='--', color='b', alpha=0.4)

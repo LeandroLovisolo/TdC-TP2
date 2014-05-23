@@ -89,6 +89,14 @@ class Hop:
             n += len(self.gateway(ip).replies)
         return 0 if n == 0 else total / n
 
+    def abs_rtt_stdev(self):
+        mu = self.abs_rtt()
+        rtts = []
+        for ip in self.gateway_ips():
+            for reply in self.gateway(ip).replies:
+                rtts.append(reply.rtt)
+        return sqrt(sum([(rtt - mu)**2 for rtt in rtts]) / len(rtts))
+
     def abs_zrtt(self):
         return (self.abs_rtt() - self._route.abs_rtt_mean()) / self._route.abs_rtt_stdev()
 
