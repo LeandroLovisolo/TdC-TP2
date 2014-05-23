@@ -25,9 +25,9 @@ def traceroute(hostname, seconds):
 
     while time.time() - t0 < seconds:
         try:
-            pkt = [IP(dst=dst_ip, ttl=ttl) / ICMP(id=randint(0, 65535))
-                   for ttl in range(1, MAX_TTL + 1)]
-            ans, unans = sr(pkt, verbose=0, timeout=PACKET_TIMEOUT)
+            pkts = [IP(dst=dst_ip, ttl=ttl) / ICMP(id=randint(0, 65535))
+                    for ttl in range(1, MAX_TTL + 1)]
+            ans, unans = sr(pkts, verbose=0, timeout=PACKET_TIMEOUT)
         except socket.error as e:
             sys.exit(e)
 
