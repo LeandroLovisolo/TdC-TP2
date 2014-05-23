@@ -3,6 +3,7 @@
 
 from plot import plot_main
 from mpl_toolkits.basemap import Basemap
+import math
 
 def corners(lons, lats):
     w = max(lons) - min(lons)
@@ -21,6 +22,10 @@ def create_map(llcrnrlon, llcrnrlat, urcrnrlon, urcrnrlat):
     m.fillcontinents()
     return m
 
+def distance(x1, y1, x2, y2):
+    return math.sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2))
+
+
 def plot_route(gateways, m):
     prev_gateway = None
 
@@ -33,7 +38,24 @@ def plot_route(gateways, m):
                 x, y = m(gw.longitude, gw.latitude)
                 xx.append(x)
                 yy.append(y)
-            m.plot(xx, yy, linewidth=2, color='b')
+
+            #print "Distance: " + str(distance(xx[0], yy[0], xx[1], yy[1]))
+            direct_distance = distance(xx[0], yy[0], xx[1], yy[1])
+            distance_to_left_end = distance(xx[0], yy[0], 0, yy[1])
+            #print "distance_to_left_end: " + str(distance_to_left_end)
+            distance_from_right_end = distance(xx[1], yy[1], 2.988636e+07, yy[1])
+            #print "distance_from_right_end: " + str(distance_from_right_end)
+            if direct_distance > distance_to_left_end + distance_from_right_end:
+                xx1 = [0, xx[0]]
+                yy1 = [yy[1], yy[0]]
+
+                xx2 = [2.988636e+07, xx[1]]
+                yy2 = [yy[1], yy[1]]
+
+                m.plot(xx1, yy1, linewidth=2, color='b')
+                m.plot(xx2, yy2, linewidth=2, color='b')
+            else:
+                m.plot(xx, yy, linewidth=2, color='b')
 
             # m.drawgreatcircle(prev_gateway.longitude, prev_gateway.latitude,
             #                   gateway.longitude, gateway.latitude,
