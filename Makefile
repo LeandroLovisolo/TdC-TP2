@@ -7,7 +7,7 @@ GEO_LITE_CITY_URL=http://geolite.maxmind.com/download/geoip/database/GeoLiteCity
 all: graphics statistics informe.pdf
 
 clean:
-	rm -f informe.pdf tex/*.aux tex/*.log tex/*.toc
+	rm -f informe.pdf tex/*.aux tex/*.log tex/*.toc tex/*.out
 
 traces: trace-oxford trace-sydney trace-must
 	
