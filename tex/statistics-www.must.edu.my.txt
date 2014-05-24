@@ -1,13 +1,13 @@
 TTL   IP Addresses    Absolute RTT    Relative RTT    Relative ZRTT  Location
-1     192.168.1.1         6.019 ms        6.019 ms           -0.190  *
-2     181.28.111.1      143.855 ms      137.836 ms            1.782  Argentina
-6     200.89.166.121     28.707 ms     -115.148 ms           -1.404  Argentina
-7     200.89.165.86      28.671 ms       -0.036 ms            0.045  Argentina
-8     64.214.130.253     44.767 ms       16.096 ms            0.249  United States
+1     192.168.1.1         5.278 ms        5.278 ms           -0.134  *
+2     181.28.111.1      121.930 ms      116.651 ms            2.043  Argentina
+6     200.89.166.121     28.317 ms      -93.613 ms           -1.623  Argentina
+7     200.89.165.86      28.037 ms       -0.280 ms            0.004  Argentina
+8     64.214.130.253     45.763 ms       17.726 ms            0.318  United States
       208.178.245.21                                                 United States
-9     67.17.192.6       171.927 ms      127.161 ms            1.647  United States
-10    203.208.172.189   175.059 ms        3.132 ms            0.085  Singapore
-11    203.208.183.145   273.035 ms       97.976 ms            1.280  Singapore
+9     67.17.192.6       171.696 ms      125.933 ms            2.205  United States
+10    203.208.172.189   174.447 ms        2.751 ms            0.057  Singapore
+11    203.208.183.145   271.733 ms       97.286 ms            1.705  Singapore
       203.208.171.137                                                Singapore
       203.208.149.61                                                 Singapore
       203.208.182.125                                                Singapore
@@ -20,7 +20,7 @@ TTL   IP Addresses    Absolute RTT    Relative RTT    Relative ZRTT  Location
       203.208.171.85                                                 Singapore
       203.208.171.234                                                Singapore
       203.208.182.41                                                 Singapore
-12    203.208.151.117   349.307 ms       76.272 ms            1.006  Singapore
+12    203.208.151.117   348.933 ms       77.199 ms            1.355  Singapore
       203.208.152.222                                                Singapore
       203.208.151.113                                                Singapore
       203.208.153.166                                                Singapore
@@ -34,24 +34,24 @@ TTL   IP Addresses    Absolute RTT    Relative RTT    Relative ZRTT  Location
       203.208.151.221                                                Singapore
       203.208.182.45                                                 Singapore
       203.208.171.189                                                Singapore
-13    203.208.183.14    350.128 ms        0.821 ms            0.056  Singapore
+13    203.208.183.14    350.153 ms        1.220 ms            0.030  Singapore
       203.208.183.153                                                Singapore
       203.208.153.254                                                Singapore
       203.208.174.82                                                 Singapore
-14    203.208.153.166   353.338 ms        3.210 ms            0.086  Singapore
+14    203.208.153.166   352.471 ms        2.318 ms            0.050  Singapore
       203.208.151.98                                                 Singapore
       124.158.224.45                                                 Malaysia
       203.208.152.222                                                Singapore
       203.208.152.226                                                Singapore
       203.208.182.45                                                 Singapore
-15    61.11.210.1       354.032 ms        0.694 ms            0.055  Malaysia
+15    61.11.210.1       354.032 ms        1.560 ms            0.036  Malaysia
       203.208.174.82                                                 Singapore
-16    61.11.211.175     350.168 ms       -3.864 ms           -0.003  Malaysia
+16    61.11.211.175     349.901 ms       -4.131 ms           -0.063  Malaysia
       124.158.224.45                                                 Malaysia
-17    124.158.228.58    357.127 ms        6.960 ms            0.134  Malaysia
+17    124.158.228.58    356.670 ms        6.769 ms            0.127  Malaysia
       61.11.210.1                                                    Malaysia
-18    110.4.44.250      351.449 ms       -5.679 ms           -0.026  Penang, Malaysia
+18    110.4.44.250      350.958 ms       -5.711 ms           -0.090  Penang, Malaysia
       61.11.211.175                                                  Malaysia
-19    124.158.228.58    358.083 ms        6.634 ms            0.129  Malaysia
-20    110.4.44.250      358.633 ms        0.550 ms            0.053  Penang, Malaysia
+19    110.4.45.250      352.772 ms        1.814 ms            0.041  Penang, Malaysia
+      124.158.228.58                                                 Malaysia
 
