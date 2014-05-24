@@ -1,64 +1,57 @@
 TTL   IP Addresses    Absolute RTT    Relative RTT    Relative ZRTT  Location
-1     192.168.1.1         2.759 ms        2.759 ms           -0.094  *
-2     190.194.57.1      168.634 ms      165.875 ms            1.519  Avellaneda, Argentina
-5     200.89.164.77      26.326 ms     -142.308 ms           -1.296  Argentina
-6     200.89.165.197     26.331 ms        0.005 ms            0.004  Argentina
-      208.178.195.205                                                Alexandria, United States
-8     61.11.210.175     356.019 ms      329.688 ms            3.015  Malaysia
-9     200.89.165.233     26.014 ms     -330.005 ms           -3.010  Argentina
-10    200.89.165.222     26.049 ms        0.036 ms            0.004  Argentina
-11    200.89.165.197     25.579 ms       -0.470 ms           -0.000  Argentina
-      208.178.195.205                                                Alexandria, United States
-12    67.16.129.202     172.589 ms      147.010 ms            1.346  United States
-13    67.17.192.6       167.939 ms       -4.651 ms           -0.039  United States
-14    203.208.171.145   172.060 ms        4.121 ms            0.041  Singapore
-15    203.208.151.117   258.795 ms       86.735 ms            0.796  Singapore
-      203.208.183.146                                                Singapore
-      203.208.151.113                                                Singapore
-      203.208.149.26                                                 Singapore
-      203.208.171.9                                                  Singapore
-      203.208.151.229                                                Singapore
-      203.208.149.38                                                 Singapore
-      203.208.149.225                                                Singapore
-      203.208.151.85                                                 Singapore
-      203.208.154.45                                                 Singapore
-      203.208.178.185                                                Singapore
-      203.208.151.221                                                Singapore
-      203.208.171.233                                                Singapore
-      203.208.149.237                                                Singapore
-      203.208.171.189                                                Singapore
-16    203.208.171.137   345.280 ms       86.485 ms            0.794  Singapore
-      203.208.152.22                                                 Singapore
+1     192.168.1.1         6.019 ms        6.019 ms           -0.190  *
+2     181.28.111.1      143.855 ms      137.836 ms            1.782  Argentina
+6     200.89.166.121     28.707 ms     -115.148 ms           -1.404  Argentina
+7     200.89.165.86      28.671 ms       -0.036 ms            0.045  Argentina
+8     64.214.130.253     44.767 ms       16.096 ms            0.249  United States
+      208.178.245.21                                                 United States
+9     67.17.192.6       171.927 ms      127.161 ms            1.647  United States
+10    203.208.172.189   175.059 ms        3.132 ms            0.085  Singapore
+11    203.208.183.145   273.035 ms       97.976 ms            1.280  Singapore
+      203.208.171.137                                                Singapore
       203.208.149.61                                                 Singapore
-      203.208.151.194                                                Singapore
+      203.208.182.125                                                Singapore
       203.208.182.77                                                 Singapore
       203.208.149.73                                                 Singapore
       203.208.172.101                                                Singapore
-      203.208.182.37                                                 Singapore
+      203.208.149.25                                                 Singapore
       203.208.153.121                                                Singapore
+      203.208.149.37                                                 Singapore
       203.208.171.85                                                 Singapore
-      203.208.171.198                                                Singapore
-      203.208.182.125                                                Singapore
+      203.208.171.234                                                Singapore
       203.208.182.41                                                 Singapore
-      203.208.152.58                                                 Singapore
-17    203.208.174.82    350.498 ms        5.218 ms            0.051  Singapore
-      203.208.171.201                                                Singapore
-      203.208.153.253                                                Singapore
-      203.208.183.154                                                Singapore
-      203.208.183.13                                                 Singapore
-18    203.208.171.198   352.568 ms        2.070 ms            0.023  Singapore
-      124.158.224.45                                                 Malaysia
-19    61.11.210.1       345.925 ms       -6.643 ms           -0.057  Malaysia
+12    203.208.151.117   349.307 ms       76.272 ms            1.006  Singapore
+      203.208.152.222                                                Singapore
+      203.208.151.113                                                Singapore
+      203.208.153.166                                                Singapore
+      203.208.151.98                                                 Singapore
+      203.208.171.9                                                  Singapore
+      203.208.151.229                                                Singapore
+      203.208.149.225                                                Singapore
+      203.208.152.226                                                Singapore
+      203.208.151.85                                                 Singapore
+      203.208.154.45                                                 Singapore
+      203.208.151.221                                                Singapore
+      203.208.182.45                                                 Singapore
+      203.208.171.189                                                Singapore
+13    203.208.183.14    350.128 ms        0.821 ms            0.056  Singapore
+      203.208.183.153                                                Singapore
+      203.208.153.254                                                Singapore
       203.208.174.82                                                 Singapore
-20    61.11.210.175     349.564 ms        3.639 ms            0.037  Malaysia
+14    203.208.153.166   353.338 ms        3.210 ms            0.086  Singapore
+      203.208.151.98                                                 Singapore
       124.158.224.45                                                 Malaysia
-21    124.158.228.58    348.006 ms       -1.558 ms           -0.010  Malaysia
+      203.208.152.222                                                Singapore
+      203.208.152.226                                                Singapore
+      203.208.182.45                                                 Singapore
+15    61.11.210.1       354.032 ms        0.694 ms            0.055  Malaysia
+      203.208.174.82                                                 Singapore
+16    61.11.211.175     350.168 ms       -3.864 ms           -0.003  Malaysia
+      124.158.224.45                                                 Malaysia
+17    124.158.228.58    357.127 ms        6.960 ms            0.134  Malaysia
       61.11.210.1                                                    Malaysia
-22    61.11.210.175     351.526 ms        3.520 ms            0.036  Malaysia
-      110.4.44.250                                                   Penang, Malaysia
-23    124.158.228.58    351.928 ms        0.402 ms            0.008  Malaysia
-      110.4.45.250                                                   Penang, Malaysia
-24    110.4.45.250      353.841 ms        1.913 ms            0.021  Penang, Malaysia
-      110.4.44.250                                                   Penang, Malaysia
-25    110.4.45.250      350.132 ms       -3.709 ms           -0.030  Penang, Malaysia
+18    110.4.44.250      351.449 ms       -5.679 ms           -0.026  Penang, Malaysia
+      61.11.211.175                                                  Malaysia
+19    124.158.228.58    358.083 ms        6.634 ms            0.129  Malaysia
+20    110.4.44.250      358.633 ms        0.550 ms            0.053  Penang, Malaysia
 

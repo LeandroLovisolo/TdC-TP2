@@ -1,3 +1,4 @@
+
 \documentclass[a4paper, 10pt, twoside]{article}
 
 \usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
@@ -16,6 +17,7 @@
 \usepackage{tabularx}
 \usepackage{multirow}
 \usepackage{hyperref}
+\usepackage{bytefield}
 \usepackage[toc, page]{appendix}
 
 
@@ -54,17 +56,32 @@
 
 
 %%%%%%%%%% Insertar estadísticas - Inicio %%%%%%%%%%
-\newcommand{\estadisticas}[1]{
-  \verbatiminput{#1}
+\newcommand{\estadisticas}[3]{
+  \begin{figure}[H]
+    \verbatiminput{#1}
+    \caption{#2}
+    \label{#3}
+  \end{figure}
 }
 %%%%%%%%%% Insertar estadísticas - Fin %%%%%%%%%%
 
 
 %%%%%%%%%% Insertar gráfico - Inicio %%%%%%%%%%
-\newcommand{\grafico}[1]{
-  \includegraphics[type=pdf,ext=.pdf,read=.pdf]{#1}
+\newcommand{\grafico}[3]{
+  \begin{figure}[H]
+    \includegraphics[type=pdf,ext=.pdf,read=.pdf]{#1}
+    \caption{#2}
+    \label{#3}
+  \end{figure}
 }
 %%%%%%%%%% Insertar gráfico - Fin %%%%%%%%%%
+
+
+%%%%%%%%%% Nombres de las universidades - Inicio %%%%%%%%%%
+\newcommand{\oxford}{University of Oxford}
+\newcommand{\sydney}{The University of Sydney}
+\newcommand{\must}{Malaysia University of Science and Technology}
+%%%%%%%%%% Nombres de las universidades - Fin %%%%%%%%%%
 
 
 \begin{document}
@@ -149,7 +166,84 @@ En este trabajo estudiamos un método para detectar enlaces submarinos en la tra
 
 \section{Desarrollo}
 
-Pendiente.
+La herramienta implementada mide los RTT hacia el host destino y cada hop intermedio durante una cantidad de tiempo dada.
+
+Cada medición se realiza enviando paquetes ICMP de tipo Echo Request al host destino, asignándole al paquete algún TTL entre 1 y 30 inclusive. Si al cabo de un segundo no se recibe ninguna respuesta, se da por perdida esa medición.
+
+Las mediciones se hacen por baches: en un determinado momento se envían 30 paquetes al host destino, uno por cada TTL en el rango mencionado y todos con TTL distinto, y se espera o bien hasta recibir las respuestas de todos los paquetes enviados, o bien hasta que transcurra un segundo; lo que ocurra primero. A continuación se registra el RTT hacia cada hop computando la diferencia entre el tiempo de recepción de una respuesta y el tiempo de envío del paquete de tipo Echo Request que la originó. Luego de esto se procede al siguiente bache de mediciones, o se finaliza en caso de exceder el tiempo de medición determinado.
+
+Para poder identificar qué paquete produjo cada respuesta recibida se hace uso del campo \emph{Identifier} de los paquetes ICMP de tipo Echo Request (figura \ref{fig:icmp-echo-request}.)
+
+\begin{figure}[h]
+  \vspace{1em}
+  \begin{center}
+    \begin{bytefield}[bitwidth=1.1em]{32}
+      \bitheader{0-31} \\
+      \bitbox{8}{Type = 8} & \bitbox{8}{Code = 0} & \bitbox{16}{Header Checksum} \\
+      \bitbox{16}{Identifier} & \bitbox{16}{Sequence Number} \\
+      \bitbox{32}{\emph{Datos}}
+    \end{bytefield}
+    \caption{Paquete ICMP de tipo Echo Request}
+  \end{center}
+  \label{fig:icmp-echo-request}
+\end{figure}
+
+En el caso que el paquete haya llegado al host destino, éste contesta enviando un paquete ICMP de tipo Echo Reply (figura \ref{fig:icmp-echo-reply}.) Este paquete también tiene un campo \emph{Identifier}, que conserva el valor del mismo campo en el paquete ICMP de tipo Echo Request que lo originó.
+
+\begin{figure}[h]
+  \vspace{1em}
+  \begin{center}
+    \begin{bytefield}[bitwidth=1.1em]{32}
+      \bitheader{0-31} \\
+      \bitbox{8}{Type = 0} & \bitbox{8}{Code = 0} & \bitbox{16}{Header Checksum} \\
+      \bitbox{16}{Identifier} & \bitbox{16}{Sequence Number} \\
+      \bitbox{32}{\emph{Datos}}
+    \end{bytefield}
+    \caption{Paquete ICMP de tipo Echo Reply}
+  \end{center}
+  \label{fig:icmp-echo-reply}
+\end{figure}
+
+Cuando un paquete (no necesariamente ICMP) rumbo al host destino agota su \emph{time to live}, el último gateway al que llegó el paquete contesta con un paquete ICMP de tipo Time Exceeded (figura \ref{fig:icmp-time-exceeded}.) Éste paquete 
+
+\begin{figure}[h]
+  \vspace{1em}
+  \begin{center}
+    \begin{bytefield}[bitwidth=1.1em]{32}
+      \bitheader{0-31} \\
+      \bitbox{8}{Type = 11} & \bitbox{8}{Code} & \bitbox{16}{Header Checksum} \\
+      \bitbox{32}{\emph{No utilizado}} \\
+      \bitbox{32}{\emph{Header IP y los primeros 8 bytes de datos del datagrama original}}
+    \end{bytefield}
+    \caption{Paquete ICMP de tipo Time Exceeded}
+  \end{center}
+  \label{fig:icmp-time-exceeded}
+\end{figure}
+
+
+
+\begin{figure}[h]
+  \vspace{1em}
+  \begin{center}
+    \begin{bytefield}[bitwidth=1.1em]{32}
+      \bitheader{0-31} \\
+      \bitbox{8}{Type = 11} & \bitbox{8}{Code} & \bitbox{16}{Header Checksum} \\
+      \bitbox{32}{\emph{No utilizado}} \\
+      \begin{rightwordgroup}{Header del \\ paquete original}
+        \bitbox{32}{\emph{Header IP}} \\
+        \bitbox{8}{Type = 8} & \bitbox{8}{Code = 0} & \bitbox{16}{Header Checksum} \\
+        \bitbox{16}{Identifier} & \bitbox{16}{Sequence Number}
+      \end{rightwordgroup}
+    \end{bytefield}
+    \caption{Paquete ICMP de tipo Time Exceeded como respuesta a otro paquete ICMP de tipo Echo Request}
+  \end{center}
+  \label{fig:icmp-time-exceeded-echo-request}
+\end{figure}
+
+
+
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -160,37 +254,61 @@ Pendiente.
 \section{Resultados}
 
 
-\subsection{University of Oxford}
+\subsection{\oxford}
 
 \estadisticas{statistics-www.ox.ac.uk.txt}
+             {Traza hacia \oxford}
+             {fig:trace-oxford}
 
 \grafico{map-www.ox.ac.uk}
+        {Ruta hacia \oxford}
+        {fig:map-oxford}
 
 \grafico{rtt-www.ox.ac.uk}
+        {RTT de los gateways de la ruta hacia \oxford}
+        {fig:rtt-oxford}
 
 \grafico{zrtt-www.ox.ac.uk}
+        {ZRTT de los gateways de la ruta hacia \oxford}
+        {fig:zrtt-oxford}
 
 
-\subsection{The University of Sydney}
+\subsection{\sydney}
 
 \estadisticas{statistics-www.sydney.edu.au.txt}
+             {Traza hacia \sydney}
+             {fig:trace-sydney}
 
 \grafico{map-www.sydney.edu.au}
+        {Ruta hacia \sydney}
+        {fig:map-sydney}
 
 \grafico{rtt-www.sydney.edu.au}
+        {RTT de los gateways de la ruta hacia \sydney}
+        {fig:rtt-sydney}
 
 \grafico{zrtt-www.sydney.edu.au}
+        {ZRTT de los gateways de la ruta hacia \sydney}
+        {fig:zrtt-sydney}
 
 
-\subsection{Malasya University of Science and Technology}
+\subsection{\must}
 
 \estadisticas{statistics-www.must.edu.my.txt}
+             {Traza hacia \must}
+             {fig:trace-must}
 
 \grafico{map-www.must.edu.my}
+        {Ruta hacia \must}
+        {fig:map-must}
 
 \grafico{rtt-www.must.edu.my}
+        {RTT de los gateways de la ruta hacia \must}
+        {fig:rtt-must}
 
 \grafico{zrtt-www.must.edu.my}
+        {ZRTT de los gateways de la ruta hacia \must}
+        {fig:zrtt-must}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

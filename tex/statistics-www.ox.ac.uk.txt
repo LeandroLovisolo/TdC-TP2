@@ -1,29 +1,28 @@
 TTL   IP Addresses    Absolute RTT    Relative RTT    Relative ZRTT  Location
-1     192.168.1.1         2.467 ms        2.467 ms           -0.121  *
-2     190.194.57.1      116.937 ms      114.470 ms            1.875  Avellaneda, Argentina
-5     200.89.166.105     31.413 ms      -85.525 ms           -1.366  Argentina
-6     200.89.165.197     30.870 ms       -0.543 ms            0.011  Argentina
-9     200.89.164.213     30.612 ms       -0.258 ms            0.016  Argentina
-10    200.89.165.222     30.258 ms       -0.354 ms            0.014  Argentina
-11    208.178.244.125    29.547 ms       -0.711 ms            0.008  United States
-12    67.16.134.218     209.956 ms      180.409 ms            2.944  United States
-      67.16.147.134                                                  United States
-13    4.68.111.121      160.149 ms      -49.807 ms           -0.787  United States
-14    4.69.138.123      262.754 ms      102.604 ms            1.683  United States
-15    4.69.140.142      167.694 ms      -95.060 ms           -1.521  United States
-16    4.69.202.65       258.969 ms       91.275 ms            1.499  United States
-17    4.69.148.106      263.497 ms        4.528 ms            0.093  United States
-18    4.69.143.214      262.053 ms       -1.443 ms           -0.004  United States
-19    4.69.201.69       263.068 ms        1.015 ms            0.036  United States
-20    4.69.137.65       266.883 ms        3.815 ms            0.082  United States
-21    4.69.143.89       266.230 ms       -0.653 ms            0.009  United States
-22    4.69.133.101      287.524 ms       21.294 ms            0.365  United States
-23    195.50.119.98     259.422 ms      -28.102 ms           -0.436  United Kingdom
-24    146.97.33.41      247.070 ms      -12.352 ms           -0.180  London, United Kingdom
-25    146.97.33.21      252.201 ms        5.131 ms            0.103  London, United Kingdom
-26    146.97.37.206     260.330 ms        8.130 ms            0.152  London, United Kingdom
-27    193.63.108.129    251.974 ms       -8.356 ms           -0.116  United Kingdom
-28    193.63.108.134    259.115 ms        7.141 ms            0.136  United Kingdom
-29    193.63.109.110    259.443 ms        0.328 ms            0.025  Wantage, United Kingdom
-30    192.76.21.2       258.893 ms       -0.550 ms            0.011  Oxford, United Kingdom
+1     192.168.1.1         3.915 ms        3.915 ms           -0.088  *
+2     190.194.57.1      164.263 ms      160.347 ms            2.231  Avellaneda, Argentina
+5     200.89.166.105     44.386 ms     -119.877 ms           -1.554  Argentina
+6     200.89.165.197     44.233 ms       -0.153 ms            0.063  Argentina
+9     200.89.164.213     43.083 ms       -1.150 ms            0.050  Argentina
+10    200.89.165.222     42.798 ms       -0.284 ms            0.062  Argentina
+11    208.178.244.125    42.155 ms       -0.644 ms            0.057  United States
+12    67.16.134.218     234.253 ms      192.099 ms            2.660  United States
+13    4.68.111.121      173.618 ms      -60.636 ms           -0.753  United States
+14    4.69.138.123      275.144 ms      101.526 ms            1.437  United States
+15    4.69.140.142      189.482 ms      -85.662 ms           -1.091  United States
+16    4.69.202.65       271.422 ms       81.940 ms            1.172  United States
+17    4.69.148.106      276.174 ms        4.752 ms            0.130  United States
+18    4.69.143.214      274.406 ms       -1.769 ms            0.042  United States
+19    4.69.201.69       275.762 ms        1.356 ms            0.084  United States
+20    4.69.137.65       278.957 ms        3.195 ms            0.109  United States
+21    4.69.143.89       278.244 ms       -0.713 ms            0.056  United States
+22    4.69.133.101      301.552 ms       23.307 ms            0.380  United States
+23    195.50.119.98     262.045 ms      -39.506 ms           -0.468  United Kingdom
+24    146.97.33.41      260.679 ms       -1.366 ms            0.047  London, United Kingdom
+25    146.97.33.21      263.462 ms        2.783 ms            0.103  London, United Kingdom
+26    146.97.37.206     262.942 ms       -0.519 ms            0.059  London, United Kingdom
+27    193.63.108.129    263.214 ms        0.272 ms            0.069  United Kingdom
+28    193.63.108.134    261.751 ms       -1.464 ms            0.046  United Kingdom
+29    193.63.109.110    271.367 ms        9.617 ms            0.195  Wantage, United Kingdom
+30    192.76.21.2       271.423 ms        0.056 ms            0.066  Oxford, United Kingdom
 
