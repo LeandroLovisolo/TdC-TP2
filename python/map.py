@@ -8,9 +8,9 @@ import math
 def corners(lons, lats):
     w = max(lons) - min(lons)
     h = max(lats) - min(lats)
-    llcrnrlon = min(lons) - w * 0.1
+    llcrnrlon = max(lons) + w * 0.1
     llcrnrlat = min(lats) - h * 0.1
-    urcrnrlon = max(lons) + w * 0.1
+    urcrnrlon = min(lons) - w * 0.1
     urcrnrlat = max(lats) + h * 0.1
     return llcrnrlon, llcrnrlat, urcrnrlon, urcrnrlat
 
@@ -39,23 +39,7 @@ def plot_route(gateways, m):
                 xx.append(x)
                 yy.append(y)
 
-            #print "Distance: " + str(distance(xx[0], yy[0], xx[1], yy[1]))
-            direct_distance = distance(xx[0], yy[0], xx[1], yy[1])
-            distance_to_left_end = distance(xx[0], yy[0], 0, yy[1])
-            #print "distance_to_left_end: " + str(distance_to_left_end)
-            distance_from_right_end = distance(xx[1], yy[1], 2.988636e+07, yy[1])
-            #print "distance_from_right_end: " + str(distance_from_right_end)
-            if direct_distance > distance_to_left_end + distance_from_right_end:
-                xx1 = [0, xx[0]]
-                yy1 = [yy[1], yy[0]]
-
-                xx2 = [2.988636e+07, xx[1]]
-                yy2 = [yy[1], yy[1]]
-
-                m.plot(xx1, yy1, linewidth=2, color='b')
-                m.plot(xx2, yy2, linewidth=2, color='b')
-            else:
-                m.plot(xx, yy, linewidth=2, color='b')
+            m.plot(xx, yy, linewidth=2, color='b')
 
             # m.drawgreatcircle(prev_gateway.longitude, prev_gateway.latitude,
             #                   gateway.longitude, gateway.latitude,
@@ -64,7 +48,7 @@ def plot_route(gateways, m):
             # mark prev_gateway
             x, y = m(prev_gateway.longitude, prev_gateway.latitude)
             # plt.text(x, y, prev_gateway.location)
-            m.plot(x, y, 'ro')
+            #m.plot(x, y, 'ro')
 
             prev_gateway = gateway
         
