@@ -40,10 +40,18 @@ def traceroute(hostname, seconds):
             sys.exit(e)
 
         for snd, rcv in ans:
-            try:
+            # ICMP packet type Echo Reply
+            if rcv.type == 0:
+                # Use the ICMP Echo Reply Identifier field
+                id = rcv[1].id
+
+            # ICMP packet type Time Exceeded
+            elif rcv.type == 11:
+                # Use the Identifier field in the original ICMP Echo Request
                 id = rcv[3].id
-            except IndexError:
-                continue
+
+            # Ignore responses of any other kind (unlikely to happen)
+            else: continue
 
             # Check that the received packet is a response to
             # a packet from the current batch.
