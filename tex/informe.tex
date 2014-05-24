@@ -172,12 +172,12 @@ La herramienta implementada mide los RTT hacia el host destino y cada hop interm
 
 Cada medición se realiza enviando paquetes ICMP de tipo Echo Request al host destino, asignándole al paquete algún TTL entre 1 y 30 inclusive. Si al cabo de un segundo no se recibe ninguna respuesta, se da por perdida esa medición.
 
-Las mediciones se hacen por baches: en un determinado momento se envían 30 paquetes al host destino, uno por cada TTL en el rango mencionado y todos con TTL distinto, y se espera o bien hasta recibir las respuestas de todos los paquetes enviados, o bien hasta que transcurra un segundo; lo que ocurra primero. A continuación se registra el RTT hacia cada hop computando la diferencia entre el tiempo de recepción de una respuesta y el tiempo de envío del paquete de tipo Echo Request que la originó. Luego de esto se procede al siguiente bache de mediciones, o se finaliza en caso de exceder el tiempo de medición determinado.
+Las mediciones se hacen por baches: en un determinado momento se envían 30 paquetes al host destino, uno por cada TTL en el rango mencionado y todos con TTL distinto, y se espera o bien hasta recibir las respuestas de todos los paquetes enviados, o bien hasta que transcurra un segundo; lo que ocurra primero. A continuación se registra el RTT hacia cada hop computando la diferencia entre el tiempo de recepción de una respuesta y el tiempo de envío del paquete de tipo Echo Request que la originó. Luego de esto se procede al siguiente bache de mediciones, o se finaliza en caso de haber excedido el límite de tiempo de medición determinado.
 
-Para poder identificar qué paquete produjo cada respuesta recibida se hace uso del campo \emph{Identifier} de los paquetes ICMP de tipo Echo Request (figura \ref{fig:icmp-echo-request}.)
+Para poder distinguir qué paquete produjo cada respuesta recibida, la herramienta le asigna un identificador único a cada paquete ICMP de tipo Echo Request emitido usando el campo \emph{Identifier} (ver figura \ref{fig:icmp-echo-request}.)
 
-\begin{figure}[h]
-  \vspace{1em}
+\begin{figure}[H]
+  \vspace{2em}
   \begin{center}
     \begin{bytefield}[bitwidth=1.1em]{32}
       \bitheader{0-31} \\
@@ -190,10 +190,10 @@ Para poder identificar qué paquete produjo cada respuesta recibida se hace uso 
   \label{fig:icmp-echo-request}
 \end{figure}
 
-En el caso que el paquete haya llegado al host destino, éste contesta enviando un paquete ICMP de tipo Echo Reply (figura \ref{fig:icmp-echo-reply}.) Este paquete también tiene un campo \emph{Identifier}, que conserva el valor del mismo campo en el paquete ICMP de tipo Echo Request que lo originó.
+En el caso que un paquete ICMP de tipo Echo Request haya llegado al host destino, éste contesta enviando un paquete ICMP de tipo Echo Reply (figura \ref{fig:icmp-echo-reply}.) Este paquete también tiene un campo \emph{Identifier}, que conserva el valor del mismo campo en el paquete ICMP de tipo Echo Request que lo originó.
 
-\begin{figure}[h]
-  \vspace{1em}
+\begin{figure}[H]
+  \vspace{2em}
   \begin{center}
     \begin{bytefield}[bitwidth=1.1em]{32}
       \bitheader{0-31} \\
@@ -206,10 +206,10 @@ En el caso que el paquete haya llegado al host destino, éste contesta enviando 
   \label{fig:icmp-echo-reply}
 \end{figure}
 
-Cuando un paquete (no necesariamente ICMP) rumbo al host destino agota su \emph{time to live}, el último gateway al que llegó el paquete contesta con un paquete ICMP de tipo Time Exceeded (figura \ref{fig:icmp-time-exceeded}.) Éste paquete 
+Cuando un paquete (no necesariamente ICMP) agota su \emph{time to live} antes de llegar al host destino, el último gateway al que llegó dicho paquete envía al host origen un paquete ICMP de tipo Time Exceeded (figura \ref{fig:icmp-time-exceeded}.) Éste paquete incluye el header IP y los primeros 8 bytes de datos del datagrama que agotó su \emph{time to live}.
 
-\begin{figure}[h]
-  \vspace{1em}
+\begin{figure}[H]
+  \vspace{2em}
   \begin{center}
     \begin{bytefield}[bitwidth=1.1em]{32}
       \bitheader{0-31} \\
@@ -222,10 +222,10 @@ Cuando un paquete (no necesariamente ICMP) rumbo al host destino agota su \emph{
   \label{fig:icmp-time-exceeded}
 \end{figure}
 
+En particular, cuando el paquete que agotó su \emph{time to live} es un paquete ICMP de tipo Echo Request, su header ICMP completo se incluye como parte de los 8 bytes de datos del datagrama original, del cual se puede extraer el valor del campo \emph{Identifier} (ver figura \ref{fig:icmp-time-exceeded-echo-request}.) 
 
-
-\begin{figure}[h]
-  \vspace{1em}
+\begin{figure}[H]
+  \vspace{2em}
   \begin{center}
     \begin{bytefield}[bitwidth=1.1em]{32}
       \bitheader{0-31} \\
@@ -241,11 +241,6 @@ Cuando un paquete (no necesariamente ICMP) rumbo al host destino agota su \emph{
   \end{center}
   \label{fig:icmp-time-exceeded-echo-request}
 \end{figure}
-
-
-
-
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
