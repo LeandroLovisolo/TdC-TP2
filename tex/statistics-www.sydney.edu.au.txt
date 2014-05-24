@@ -1,23 +1,23 @@
 TTL   IP Addresses    Absolute RTT    Relative RTT    Relative ZRTT  Location
-1     192.168.1.1         2.672 ms        2.672 ms           -0.212  *
-2     190.194.57.1      162.473 ms      159.801 ms            2.162  Avellaneda, Argentina
-5     200.89.165.157     74.212 ms      -88.261 ms           -1.128  Argentina
-6     200.89.165.130     73.531 ms       -0.681 ms            0.033  Argentina
-9     200.89.164.217     72.823 ms       -0.708 ms            0.033  Argentina
-10    200.89.165.222     73.014 ms        0.191 ms            0.045  Argentina
-11    159.63.53.213      72.701 ms       -0.313 ms            0.038  United States
-12    67.16.139.18      242.320 ms      169.619 ms            2.292  United States
-13    129.250.9.117     221.543 ms      -20.777 ms           -0.233  Englewood, United States
-14    129.250.3.172     215.296 ms       -6.247 ms           -0.041  Englewood, United States
-15    129.250.3.174     227.112 ms       11.817 ms            0.199  Englewood, United States
-16    129.250.2.168     237.696 ms       10.583 ms            0.183  Englewood, United States
-17    129.250.2.230     235.710 ms       -1.985 ms            0.016  Englewood, United States
-18    204.1.253.166     235.038 ms       -0.673 ms            0.033  Englewood, United States
-19    202.158.194.172   358.811 ms      123.774 ms            1.684  Australia
-20    113.197.15.68     359.129 ms        0.318 ms            0.046  Australia
-21    113.197.15.66     381.133 ms       22.004 ms            0.334  Australia
-22    113.197.15.65     392.658 ms       11.525 ms            0.195  Australia
-23    202.158.194.197   392.258 ms       -0.400 ms            0.037  Australia
-24    202.158.205.165   392.901 ms        0.643 ms            0.051  Australia
-25    113.197.9.186     392.537 ms       -0.364 ms            0.037  Lidcombe, Australia
+1     192.168.1.1         2.495 ms        2.495 ms           -0.213  *
+2     190.194.57.1      138.808 ms      136.313 ms            1.956  Avellaneda, Argentina
+5     200.89.165.157     30.104 ms     -108.703 ms           -1.586  Argentina
+6     200.89.165.130     29.463 ms       -0.641 ms           -0.024  Argentina
+9     200.89.164.217     28.635 ms       -0.828 ms           -0.026  Argentina
+10    200.89.165.222     28.665 ms        0.031 ms           -0.014  Argentina
+11    159.63.53.213      36.210 ms        7.544 ms            0.095  United States
+12    67.16.139.18      207.744 ms      171.534 ms            2.465  United States
+13    129.250.9.117     192.087 ms      -15.657 ms           -0.241  Englewood, United States
+14    129.250.3.172     195.526 ms        3.439 ms            0.035  Englewood, United States
+15    129.250.3.174     194.925 ms       -0.601 ms           -0.023  Englewood, United States
+16    129.250.2.168     231.937 ms       37.012 ms            0.521  Englewood, United States
+17    129.250.2.230     228.437 ms       -3.500 ms           -0.065  Englewood, United States
+18    204.1.253.166     228.255 ms       -0.181 ms           -0.017  Englewood, United States
+19    202.158.194.172   352.907 ms      124.651 ms            1.788  Australia
+20    113.197.15.68     352.569 ms       -0.337 ms           -0.019  Australia
+21    113.197.15.66     375.784 ms       23.215 ms            0.321  Australia
+22    113.197.15.65     358.409 ms      -17.375 ms           -0.265  Australia
+23    202.158.194.197   386.693 ms       28.284 ms            0.395  Australia
+24    202.158.205.165   387.616 ms        0.923 ms           -0.001  Australia
+25    113.197.9.186     361.201 ms      -26.415 ms           -0.396  Lidcombe, Australia
 
