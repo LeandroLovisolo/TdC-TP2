@@ -312,13 +312,19 @@ Cuando un paquete (no necesariamente ICMP) rumbo al host destino agota su \emph{
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Discusión                      			                                 %%
+%% Discusión                      			                                     %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \section{Discusión}
 
-Pendiente.
+Podemos notar, en los resultados de todas las universidades analizadas, que el segundo nodo, el nodo más próximo a nuestra conexión a internet, posee un RTT promedio alto en comparación a los nodos más próximos a este. Podemos deducir que esto se debe a que este router tiene una prioridad baja para las respuestas a paquetes ICMP, haciendo que las respuestas tarden más de lo esperado.
+
+
+Otro punto a tener en cuenta, también visible en los resultados de los traceroutes a todas las universidades, es que la biblioteca elegida para la geolocalización basa muy probablemente la localización de los IP según la procedencia de la compañía que realize el enlace entre paises. Puede notarse en los análisis como existen enlaces de bajo ZRTT relativo entre paises y el próximo nodo dentro del país destino tiene un ZRTT relativo demaciado alto, indicando probablemente un enlace de gran distancia.
+
+Un dato estadístico anómalo general es el de obtener un RTT absoluto menor al RTT absoluto del nodo siguiente, lo que significaría que llegar al nodo siguiente tardaría menos que llegar al anterior. Esta anomalía se debe a que los valores del RTT absolutos se calculan mediante el promedio de estos para cada nodo, pudiendo el paquete ICMP haber tomado caminos diferentes y habiendo conseguido llegar de manera a penas más rápida en promedio.
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
