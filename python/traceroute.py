@@ -40,7 +40,10 @@ def traceroute(hostname, seconds):
             sys.exit(e)
 
         for snd, rcv in ans:
-            id = rcv[3].id
+            try:
+                id = rcv[3].id
+            except IndexError:
+                continue
 
             # Check that the received packet is a response to
             # a packet from the current batch.
