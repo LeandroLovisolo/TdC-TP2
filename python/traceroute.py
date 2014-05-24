@@ -22,17 +22,32 @@ def traceroute(hostname, seconds):
     print 'Tracing route to %s...' % hostname
 
     t0 = time.time()
+    last_id = 0
 
     while time.time() - t0 < seconds:
+        base_id = last_id
+
+        pkts = []
+        for ttl in range(1, MAX_TTL + 1):
+            id = base_id + ttl
+            pkts.append(IP(dst=dst_ip, ttl=ttl) / ICMP(id=id))
+
+        last_id = id
+
         try:
-            pkts = [IP(dst=dst_ip, ttl=ttl) / ICMP(id=randint(0, 65535))
-                    for ttl in range(1, MAX_TTL + 1)]
             ans, unans = sr(pkts, verbose=0, timeout=PACKET_TIMEOUT)
         except socket.error as e:
             sys.exit(e)
 
         for snd, rcv in ans:
-            ttl  = snd.ttl
+            id = rcv[3].id
+
+            # Check that the received packet is a response to
+            # a packet from the current batch.
+            if id < base_id + 1 or id > base_id + 30:
+                continue
+
+            ttl  = id - base_id
             ip   = rcv.src
             type = rcv.type
             rtt  = (rcv.time - snd.sent_time) * 1000
