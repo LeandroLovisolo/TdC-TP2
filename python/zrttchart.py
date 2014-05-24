@@ -29,7 +29,7 @@ def plot(plt, fig, route):
     plt.text(threshold, len(gateways) - 1, 'Umbral', rotation='vertical',
              verticalalignment='top', horizontalalignment='right')
 
-    fig.set_size_inches(6, 10) 
+    fig.set_size_inches(6, 9) 
 
 if __name__ == '__main__':
     plot_main(plot)

@@ -38,7 +38,7 @@ def plot(plt, fig, route):
     plt.text(route.abs_rtt_mean(), len(gateways) - 1, 'Media', rotation='vertical',
              verticalalignment='top', horizontalalignment='right')
 
-    fig.set_size_inches(6, 10) 
+    fig.set_size_inches(6, 9) 
 
 if __name__ == '__main__':
     plot_main(plot)
