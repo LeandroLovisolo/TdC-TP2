@@ -15,7 +15,7 @@ trace-oxford:
 	./traceroute www.ox.ac.uk -t 3600 -o traces/www.ox.ac.uk
 
 trace-sydney:
-	./traceroute wwww.sydney.edu.au -t 3600 -o traces/www.sydney.edu.au
+	./traceroute www.sydney.edu.au -t 3600 -o traces/www.sydney.edu.au
 
 trace-must:
 	./traceroute www.must.edu.my -t 3600 -o traces/www.must.edu.my
