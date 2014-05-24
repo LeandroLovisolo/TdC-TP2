@@ -6,11 +6,13 @@ from mpl_toolkits.basemap import Basemap
 import math
 
 def corners(lons, lats):
+    for i in range(len(lons)):
+        lons[i] = lons[i] % 360
     w = max(lons) - min(lons)
     h = max(lats) - min(lats)
-    llcrnrlon = max(lons) + w * 0.1
+    llcrnrlon = min(lons) - w * 0.1
     llcrnrlat = min(lats) - h * 0.1
-    urcrnrlon = min(lons) - w * 0.1
+    urcrnrlon = max(lons) + w * 0.1
     urcrnrlat = max(lats) + h * 0.1
     return llcrnrlon, llcrnrlat, urcrnrlon, urcrnrlat
 
@@ -35,7 +37,7 @@ def plot_route(gateways, m):
             # draw line between prev_gateway and gateway
             xx = []; yy = []
             for gw in [prev_gateway, gateway]:
-                x, y = m(gw.longitude, gw.latitude)
+                x, y = m(gw.longitude % 360, gw.latitude)
                 xx.append(x)
                 yy.append(y)
 
@@ -46,14 +48,14 @@ def plot_route(gateways, m):
             #                   linewidth=2,color='b')
 
             # mark prev_gateway
-            x, y = m(prev_gateway.longitude, prev_gateway.latitude)
+            x, y = m(prev_gateway.longitude % 360, prev_gateway.latitude)
             # plt.text(x, y, prev_gateway.location)
-            #m.plot(x, y, 'ro')
+            m.plot(x, y, 'ro')
 
             prev_gateway = gateway
         
         # mark final gateway
-        x, y = m(gateway.longitude, gateway.latitude)
+        x, y = m(gateway.longitude % 360, gateway.latitude)
         # plt.text(x, y, gateway.location)
         m.plot(x, y, 'ro')
 
