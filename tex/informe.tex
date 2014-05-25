@@ -231,8 +231,8 @@ En particular, cuando el paquete que agotó su \emph{time to live} es un paquete
       \bitheader{0-31} \\
       \bitbox{8}{Type = 11} & \bitbox{8}{Code} & \bitbox{16}{Header Checksum} \\
       \bitbox{32}{\emph{No utilizado}} \\
-      \begin{rightwordgroup}{Header del \\ paquete original}
-        \bitbox{32}{\emph{Header IP}} \\
+      \bitbox{32}{\emph{Header IP del paquete original}} \\
+      \begin{rightwordgroup}{Header ICMP \\ del paquete \\ original}
         \bitbox{8}{Type = 8} & \bitbox{8}{Code = 0} & \bitbox{16}{Header Checksum} \\
         \bitbox{16}{Identifier} & \bitbox{16}{Sequence Number}
       \end{rightwordgroup}
