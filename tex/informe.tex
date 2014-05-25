@@ -185,8 +185,8 @@ Para poder distinguir qué paquete produjo cada respuesta recibida, la herramien
       \bitbox{16}{Identifier} & \bitbox{16}{Sequence Number} \\
       \bitbox{32}{\emph{Datos}}
     \end{bytefield}
-    \caption{Paquete ICMP de tipo Echo Request}
   \end{center}
+  \caption{Paquete ICMP de tipo Echo Request}
   \label{fig:icmp-echo-request}
 \end{figure}
 
@@ -201,8 +201,8 @@ En el caso que un paquete ICMP de tipo Echo Request haya llegado al host destino
       \bitbox{16}{Identifier} & \bitbox{16}{Sequence Number} \\
       \bitbox{32}{\emph{Datos}}
     \end{bytefield}
-    \caption{Paquete ICMP de tipo Echo Reply}
   \end{center}
+  \caption{Paquete ICMP de tipo Echo Reply}
   \label{fig:icmp-echo-reply}
 \end{figure}
 
@@ -217,8 +217,8 @@ Cuando un paquete (no necesariamente ICMP) agota su \emph{time to live} antes de
       \bitbox{32}{\emph{No utilizado}} \\
       \bitbox{32}{\emph{Header IP y los primeros 8 bytes de datos del datagrama original}}
     \end{bytefield}
-    \caption{Paquete ICMP de tipo Time Exceeded}
   \end{center}
+  \caption{Paquete ICMP de tipo Time Exceeded}
   \label{fig:icmp-time-exceeded}
 \end{figure}
 
@@ -237,8 +237,8 @@ En particular, cuando el paquete que agotó su \emph{time to live} es un paquete
         \bitbox{16}{Identifier} & \bitbox{16}{Sequence Number}
       \end{rightwordgroup}
     \end{bytefield}
-    \caption{Paquete ICMP de tipo Time Exceeded como respuesta a otro paquete ICMP de tipo Echo Request}
   \end{center}
+  \caption{Paquete ICMP de tipo Time Exceeded como respuesta a otro paquete ICMP de tipo Echo Request}
   \label{fig:icmp-time-exceeded-echo-request}
 \end{figure}
 
@@ -330,6 +330,8 @@ Un dato estadístico anómalo general es el de obtener un RTT absoluto menor al 
 
 
 \section{Conclusión}
+
+\label{foo}
 
 Pendiente.
 
