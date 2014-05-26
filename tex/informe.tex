@@ -168,11 +168,26 @@ En este trabajo estudiamos un método para detectar enlaces submarinos en la tra
 
 \section{Desarrollo}
 
-La herramienta implementada mide los RTT hacia el host destino y cada hop intermedio durante una cantidad de tiempo dada.
+Se implementó una herramienta en lenguaje Python para medir los \emph{round-trip times} (RTT) promedio hacia el host destino y cada hop intermedio durante una cantidad de tiempo determinada por el usuario. La herramienta hace fuerte uso del protocolo ICMP \cite{rfc-792} tanto para descubrir la cantidad de hops y los gateways en cada hop hacia el host destino, como para medir los RTT hacia el host destino y cada hop intermedio (de manera similar a las herramientas \texttt{traceroute} \cite{wiki-traceroute} y \texttt{ping} \cite{wiki-ping}, respectivamente.)
 
-Cada medición se realiza enviando paquetes ICMP de tipo Echo Request al host destino, asignándole al paquete algún TTL entre 1 y 30 inclusive. Si al cabo de un segundo no se recibe ninguna respuesta, se da por perdida esa medición.
+La herramienta hace uso la biblioteca Scapy \cite{scapy} para la creación y comunicación de paquetes ICMP.
 
-Las mediciones se hacen por baches: en un determinado momento se envían 30 paquetes al host destino, uno por cada TTL en el rango mencionado y todos con TTL distinto, y se espera o bien hasta recibir las respuestas de todos los paquetes enviados, o bien hasta que transcurra un segundo; lo que ocurra primero. A continuación se registra el RTT hacia cada hop computando la diferencia entre el tiempo de recepción de una respuesta y el tiempo de envío del paquete de tipo Echo Request que la originó. Luego de esto se procede al siguiente bache de mediciones, o se finaliza en caso de haber excedido el límite de tiempo de medición determinado.
+Una medición consiste en enviar un paquete ICMP de tipo Echo Request al host destino, asignándole al paquete algún \emph{time-to-live} (TTL) entre 1 y 30 inclusive, y tomar el tiempo que transcurre desde que se envía el paquete hasta que se recibe una respuesta. Las respuestas usualmente son de alguno de los siguientes tipos:
+
+\begin{itemize}
+  \item Un paquete ICMP de tipo Echo Reply en caso que el paquete emitido alcanzara el host destino, ó
+  \item Un paquete ICMP de tipo Time Exceeded en caso que el paquete agotara su TTL antes de llegar al host destino.
+\end{itemize}
+
+Es posible recibir respuestas de otros tipos, como por ejemplo paquetes ICMP de tipo Destination Unreachable en el caso que no se haya podido despachar el paquete a su destino por algún motivo, pero la herramienta ignora cualquier respuesta que no sea de los dos tipos anteriores.
+
+Para medir el RTT hacia el host destino, basta con enviarle un paquete a dicho host con un TTL lo suficientemente grande para asegurar que su TTL no se agote durante el envío del paquete, esperar hasta recibir un paquete ICMP de tipo Echo Reply proveniente del host destino.
+
+Para medir el RTT hacia el $i$-ésimo hop en la ruta al host destino, se le asigna al paquete un TTL de valor $i$. Esto produce que el paquete agote su TTL al llegar al $i$-éstimo host, a lo cual éste responde con un paquete ICMP de tipo Time Exceeded.
+
+Tanto cuando se mide el RTT hacia el host destino o hacia un hop intermedio puede ocurrir que no se reciba ninguna respuesta, por ejemplo cuando el host o algún gateway está detrás de un firewall que bloquea el protocolo ICMP. Para evitar esperar indefinidmente una respuesta, la herramienta espera como máximo un segundo la llegada de una respuesta, y si al cabo de ese tiempo no se recibe una, se descarta esa medición.
+
+Las mediciones se hacen por baches: en un determinado momento se envían 30 paquetes al host destino, uno por cada TTL en el rango mencionado y todos con TTL distinto, y se espera o bien hasta recibir las respuestas de todos los paquetes enviados, o bien hasta que transcurra un segundo y se den por perdidas las mediciones para las que no se recibieron respuestas. A continuación se registra el RTT hacia cada hop computando la diferencia entre el tiempo de recepción de una respuesta y el tiempo de envío del paquete de tipo Echo Request que la originó. Luego de esto se procede al siguiente bache de mediciones, o se finaliza en caso de haber excedido el límite de tiempo de medición determinado por el usuario.
 
 Para poder distinguir qué paquete produjo cada respuesta recibida, la herramienta le asigna un identificador único a cada paquete ICMP de tipo Echo Request emitido usando el campo \emph{Identifier} (ver figura \ref{fig:icmp-echo-request}.)
 
@@ -206,7 +221,7 @@ En el caso que un paquete ICMP de tipo Echo Request haya llegado al host destino
   \label{fig:icmp-echo-reply}
 \end{figure}
 
-Cuando un paquete (no necesariamente ICMP) agota su \emph{time to live} antes de llegar al host destino, el último gateway al que llegó dicho paquete envía al host origen un paquete ICMP de tipo Time Exceeded (figura \ref{fig:icmp-time-exceeded}.) Éste paquete incluye el header IP y los primeros 8 bytes de datos del datagrama que agotó su \emph{time to live}.
+Cuando un paquete (no necesariamente ICMP) agota su TTL antes de llegar al host destino, el último gateway al que llegó dicho paquete envía al host origen un paquete ICMP de tipo Time Exceeded (figura \ref{fig:icmp-time-exceeded}.) Éste paquete incluye el header IP y los primeros 8 bytes de datos del datagrama que agotó su TTL.
 
 \begin{figure}[H]
   \vspace{2em}
@@ -215,14 +230,14 @@ Cuando un paquete (no necesariamente ICMP) agota su \emph{time to live} antes de
       \bitheader{0-31} \\
       \bitbox{8}{Type = 11} & \bitbox{8}{Code} & \bitbox{16}{Header Checksum} \\
       \bitbox{32}{\emph{No utilizado}} \\
-      \bitbox{32}{\emph{Header IP y los primeros 8 bytes de datos del datagrama original}}
+      \wordbox{2}{\emph{Header IP y los primeros 8 bytes de datos del datagrama original} \\ $\vdots$}
     \end{bytefield}
   \end{center}
   \caption{Paquete ICMP de tipo Time Exceeded}
   \label{fig:icmp-time-exceeded}
 \end{figure}
 
-En particular, cuando el paquete que agotó su \emph{time to live} es un paquete ICMP de tipo Echo Request, su header ICMP completo se incluye como parte de los 8 bytes de datos del datagrama original, del cual se puede extraer el valor del campo \emph{Identifier} (ver figura \ref{fig:icmp-time-exceeded-echo-request}.) 
+En particular, cuando el paquete que agotó su TTL es un paquete ICMP de tipo Echo Request, su header ICMP completo se incluye como parte de los 8 bytes de datos del datagrama original, del cual se puede extraer el valor del campo \emph{Identifier} (ver figura \ref{fig:icmp-time-exceeded-echo-request}.) 
 
 \begin{figure}[H]
   \vspace{2em}
@@ -358,7 +373,26 @@ Pendiente.
 \bibitem{scapy}
 	\emph{Scapy Project}.
 	\url{http://www.secdev.org/projects/scapy}, 
-	Mayo de 2014
+	Mayo de 2014.
+
+\bibitem{rfc-792}
+  \emph{RFC 792: Internet Control Message Protocol}.
+  \url{http://tools.ietf.org/html/rfc792}.
+
+\bibitem{wiki-traceroute}
+  \emph{Traceroute}.
+  \url{http://en.wikipedia.org/wiki/Traceroute},
+  Mayo de 2014.
+
+\bibitem{wiki-ping}
+  \emph{Ping (network utility) (Artículo en Wikipedia)}.
+  \url{http://en.wikipedia.org/wiki/Ping_(networking_utility)},
+  Mayo de 2014.
+
+\bibitem{wiki-icmp}
+  \emph{Internet Control Message Protocol (Artículo en Wikipedia)}.
+  \url{http://en.wikipedia.org/wiki/Internet_Control_Message_Protocol},
+  Mayo de 2014.
 	
 \end{thebibliography}
 
