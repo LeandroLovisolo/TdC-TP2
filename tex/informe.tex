@@ -172,7 +172,7 @@ El método propuesto propone, en base a los datos estadísticos, la utilización
 
 \section{Desarrollo}
 
-Se implementó una herramienta en lenguaje Python para medir los \emph{round-trip times} (RTT) hacia el host destino y cada hop intermedio durante una cantidad de tiempo determinada por el usuario. La herramienta se basa en el protocolo ICMP \cite{rfc-792} tanto para descubrir la cantidad de hops y los gateways en cada hop hacia el host destino, como para medir los RTT hacia el host destino y cada hop intermedio (de manera similar a las herramientas \texttt{traceroute} \cite{wiki-traceroute} y \texttt{ping} \cite{wiki-ping}, respectivamente.)
+Se implementó una herramienta en lenguaje Python para medir el \emph{round-trip time} (RTT) hacia el host destino y cada hop intermedio durante una cantidad de tiempo determinada por el usuario. La herramienta se basa en el protocolo ICMP \cite{rfc-792} tanto para descubrir la cantidad de hops y los gateways en cada hop hacia el host destino, como para medir los RTT hacia el host destino y cada hop intermedio (de manera similar a las herramientas \texttt{traceroute} \cite{wiki-traceroute} y \texttt{ping} \cite{wiki-ping}, respectivamente.)
 
 La herramienta hace uso la biblioteca Scapy \cite{scapy} para la creación y comunicación de paquetes ICMP.
 
@@ -188,20 +188,20 @@ Una medición consiste en enviar un paquete ICMP de tipo Echo Request al host de
 
 Es posible recibir respuestas de otros tipos, como por ejemplo paquetes ICMP de tipo Destination Unreachable en el caso que no se haya podido despachar el paquete a su destino por algún motivo, pero la herramienta ignora cualquier respuesta que no sea de los dos tipos anteriores.
 
-Para medir el RTT hacia el host destino, basta con enviarle un paquete a dicho host con un TTL lo suficientemente grande para asegurar que su TTL no se agote durante el envío del paquete, esperar hasta recibir un paquete ICMP de tipo Echo Reply proveniente del host destino y registrar el tiempo transcurrido.
+Para medir el RTT hacia el host destino basta con enviarle un paquete a dicho host con un TTL lo suficientemente grande para asegurar que su TTL no se agote durante el envío del paquete, esperar hasta recibir un paquete ICMP de tipo Echo Reply proveniente del host destino y registrar el tiempo transcurrido.
 
-Para medir el RTT hacia el $i$-ésimo hop en la ruta al host destino, se le asigna al paquete un TTL de valor $i$. Esto produce que el paquete agote su TTL al llegar al $i$-éstimo host, a lo cual éste responde con un paquete ICMP de tipo Time Exceeded. Finalmente se registra el tiempo transcurrido.
+Para medir el RTT hacia el $i$-ésimo hop en la ruta al host destino, se le asigna al paquete un TTL de valor $i$. Esto produce que el paquete agote su TTL al llegar a un gateway en el $i$-éstimo hop, a lo cual éste responde con un paquete ICMP de tipo Time Exceeded. Finalmente se registra el tiempo transcurrido.
 
-Tanto cuando se mide el RTT hacia el host destino o hacia un hop intermedio puede ocurrir que no se reciba ninguna respuesta, por ejemplo cuando el host o algún gateway está detrás de un firewall que bloquea el protocolo ICMP. Para evitar quedar esperando una respuesta durante una cantidad de tiempo indefinida, la herramienta descarta la medición si al cabo de un segundo no se recibio una respuesta.
+Tanto cuando se mide el RTT hacia el host destino o hacia un hop intermedio puede ocurrir que no se reciba ninguna respuesta, por ejemplo cuando el host o algún gateway está detrás de un firewall que bloquea el protocolo ICMP. Para evitar quedar esperando una respuesta durante una cantidad de tiempo indefinida, la herramienta descarta la medición si al cabo de un segundo no se recibió una respuesta.
 
 
 \subsection{Realizando múltiples mediciones en paralelo}
 
 Con el objetivo de maximizar el número total de mediciones realizadas y distribuir el impacto de picos de retraso en la conexión a internet entre las mediciones de RTT hacia todos los hops, la herramienta realiza mediciones hacia todos los hops de forma simultánea.
 
-Las mediciones se hacen por baches: en un determinado momento se envían 30 paquetes al host destino, uno por cada TTL entre 1 y 30 y todos con TTL distinto, y se espera o bien hasta recibir las respuestas de todos los paquetes enviados, o bien hasta que transcurra un segundo y se den por perdidas las mediciones para las que no se recibieron respuestas. A continuación se registra el RTT hacia cada hop computando la diferencia entre el tiempo de recepción de una respuesta y el tiempo de envío del paquete de tipo Echo Request que la originó. Luego de esto se procede al siguiente bache de mediciones, o se finaliza en caso de haber excedido el límite de tiempo de medición determinado por el usuario.
+Las mediciones se hacen por baches: en un determinado momento se envían 30 paquetes al host destino, uno por cada TTL entre 1 y 30 y todos con TTL distinto, y se espera o bien hasta recibir las respuestas de todos los paquetes enviados, o bien hasta que transcurra un segundo y se den por perdidas las mediciones para las que no se recibieron respuestas. A continuación se registra el RTT hacia cada hop computando la diferencia entre el tiempo de recepción de una respuesta y el tiempo de envío del paquete de tipo Echo Request que la originó. Luego de esto se procede al siguiente bache de mediciones, o alternativamente, la herramienta termina su ejecución en caso de haber excedido el límite de tiempo de medición determinado por el usuario.
 
-Para poder distinguir qué paquete produjo cada respuesta recibida, la herramienta le asigna un identificador único a cada paquete ICMP de tipo Echo Request emitido usando el campo \emph{Identifier} (figura \ref{fig:icmp-echo-request}) de manera de luego poder obtener el valor del campo TTL de un paquete ICMP de tipo Echo Request conociendo el valor de su campo \emph{Identifier}.
+Para poder distinguir qué paquete produjo cada respuesta recibida, la herramienta le asigna un identificador único a cada paquete ICMP de tipo Echo Request emitido usando el campo \emph{Identifier} (figura \ref{fig:icmp-echo-request}.) En la sección \ref{sec:obteniendo-identifier} se detalla el procedimiento implementado en la herramienta para obtener el valor del campo \emph{Identifier} de un paquete ICMP de tipo Echo Request a partir de una respuesta de tipo Echo Reply o Time Exceeded.
 
 \begin{figure}[H]
   \vspace{2em}
@@ -216,6 +216,23 @@ Para poder distinguir qué paquete produjo cada respuesta recibida, la herramien
   \caption{Paquete ICMP de tipo Echo Request}
   \label{fig:icmp-echo-request}
 \end{figure}
+
+
+\subsubsection{Construcción de un identificador único para cada paquete emitido}
+
+El identificador único se construye de forma tal que el TTL del paquete esté codificado dentro del identificador, y si se tiene un identificador cuyo paquete asociado se desconoce, sea posible deducir su TTL a partir del identificador. La siguiente es la fórmula utilizada por la herramienta para construir un identificador único dado el número de bache (comenzando desde $1$) y el TTL del paquete:
+
+$$\mathit{identificador}(\mathit{bache}, \mathit{ttl}) = 30 \times (\mathit{bache} - 1) + \mathit{ttl}$$
+
+Luego para el caso en el que se tiene un identificador y se desea obtener el TTL del paquete asociado, se puede aplicar siguiente fórmula:
+
+$$\mathit{ttl}(\mathit{identificador}) = (\mathit{identificador} - 1 \bmod 30) + 1$$
+
+Entonces por ejemplo, para el caso en el que $\mathit{bache} = 3$ y $\mathit{ttl} = 15$, se tiene que $\mathit{identificador}(\mathit{bache}, \mathit{ttl}) = \mathit{identificador}(3, 15) = 30 \times (3 - 1) + 15 = 75$. Luego para obtener el TTL a partir del identificador obtenido aplicando la segunda fórmula, se tiene que $\mathit{ttl}(75) = (75 - 1 \bmod 30) + 1 = (74 \bmod 30) + 1 = 14 + 1 = 15$.
+
+
+\subsubsection{Obteniendo el valor del campo \emph{Identifier} de paquete que originó una respuesta}
+\label{sec:obteniendo-identifier}
 
 En el caso que un paquete ICMP de tipo Echo Request haya llegado al host destino, éste contesta enviando un paquete ICMP de tipo Echo Reply (figura \ref{fig:icmp-echo-reply}.) Este paquete también tiene un campo \emph{Identifier}, que conserva el valor del mismo campo en el paquete ICMP de tipo Echo Request que lo originó.
 
@@ -292,9 +309,9 @@ Una vez determinados los hosts destino, se hicieron experimentos con versiones a
 
 En esta primera iteración de la herramienta se enviaban simultáneamente 100 paquetes ICMP de tipo Echo Request al host destino con TTL 1 y se esperaba hasta recibir las 100 respuestas correspondientes, o bien hasta que transcurriera un segundo desde que se enviaron los paquetes. En este último caso, se descartan las mediciones correspondientes a los paquetes para los que no se recibieron respuestas. Luego se repite este proceso para los valores de TTL de 2 a 30 inclusive.
 
-Esta técnica resultó estar muy sujeta a la congestión de la red en el momento que se tomaron las mediciones. Por ejemplo, si en el instante que se envían los paquetes para el $i$-ésimo TTL la conexión a internet de la computadora desde la que se realiza la medición sufre una congestión, pero la conexión se normaliza para el instante en el que se envían los paquetes para el $(i+1)$-ésimo TTL, el RTT promedio para el $i$-ésimo hop puede resultar muy superior al del $(i+1)$-ésimo hop. Esta anomalía puede producir un falso positivo en la etapa de detección de enlaces submarinos más adelante en el análisis.
+Esta técnica resultó estar muy sujeta a la congestión de la red en el momento que se tomaron las mediciones. Por ejemplo, si en el instante que se envían los paquetes para el $i$-ésimo TTL la conexión a internet de la computadora desde la que se realiza la medición sufre una congestión, pero la conexión se normaliza para el instante en el que se envían los paquetes para el $(i+1)$-ésimo TTL, es posible que el RTT promedio para el $i$-ésimo hop resulte muy superior al del $(i+1)$-ésimo hop. Esta anomalía puede producir un falso positivo en la etapa de detección de enlaces submarinos más adelante en el análisis.
 
-Luego de repetir varias veces las mediciones para cada host destino y observar resultados muy distintos entre medición y medición para un mismo host, se decidió modificar la herramienta de manera de esparcir uniformemente en el tiempo las mediciones para cada TTL con la esperanza de suavizar las anomalías producidas por variaciones en la carga de la conexión a internet.
+Luego de repetir varias veces las mediciones para cada host destino y observar resultados muy distintos entre medición y medición para un mismo destino, se decidió modificar la herramienta de manera de esparcir uniformemente en el tiempo las mediciones para cada TTL, con la esperanza de suavizar las anomalías producidas por variaciones en la carga de la conexión a internet.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
