@@ -196,6 +196,7 @@ Tanto cuando se mide el RTT hacia el host destino o hacia un hop intermedio pued
 
 
 \subsection{Realizando múltiples mediciones en paralelo}
+\label{sec:mediciones-en-paralelo}
 
 Con el objetivo de maximizar el número total de mediciones realizadas y distribuir el impacto de picos de retraso en la conexión a internet entre las mediciones de RTT hacia todos los hops, la herramienta realiza mediciones hacia todos los hops de forma simultánea.
 
@@ -312,6 +313,27 @@ En esta primera iteración de la herramienta se enviaban simultáneamente 100 pa
 Esta técnica resultó estar muy sujeta a la congestión de la red en el momento que se tomaron las mediciones. Por ejemplo, si en el instante que se envían los paquetes para el $i$-ésimo TTL la conexión a internet de la computadora desde la que se realiza la medición sufre una congestión, pero la conexión se normaliza para el instante en el que se envían los paquetes para el $(i+1)$-ésimo TTL, es posible que el RTT promedio para el $i$-ésimo hop resulte muy superior al del $(i+1)$-ésimo hop. Esta anomalía puede producir un falso positivo en la etapa de detección de enlaces submarinos más adelante en el análisis.
 
 Luego de repetir varias veces las mediciones para cada host destino y observar resultados muy distintos entre medición y medición para un mismo destino, se decidió modificar la herramienta de manera de esparcir uniformemente en el tiempo las mediciones para cada TTL, con la esperanza de suavizar las anomalías producidas por variaciones en la carga de la conexión a internet.
+
+
+\subsubsection{Experimento 2: múltiples mediciones en paralelo, todos los hops a la vez durante 1 minuto, identificadores de paquetes asignados al azar}
+
+Para este experimento se modificó la herramienta de forma de aplicar el procedimiento de envío de paquetes por baches a todos los hops en simultáneo descrito en la sección \ref{sec:mediciones-en-paralelo}, pero con la diferencia que se le asignó a cada paquete un identificador elegido al azar en el intervalo $[0, 65535]$ equiprobablemente.
+
+Los resultados para todas las mediciones fueron más consistentes que en el experimento anterior. Sin embargo aún se registraban pequeñas anomalías, que supusimos se trataban de errores de medición.
+
+Para tener algún marco de referencia con el que comparar nuestras mediciones, se utilizó la herramienta \texttt{mtr} \cite{mtr}, que permite medir el RTT hacia cada hop en la ruta a un host destino y computar el RTT promedio para cada hop, entre otras estadísticas. El RTT promedio para cada hop computado por \texttt{mtr} resultó muy similar al computado por nuestra herramienta, con la salvedad que en los casos que un hop $i$ registraba un RTT promedio más alto que el hop $i + 1$, esta diferencia era notablemente más pequeña en la medición obtenida con \texttt{mtr} que con nuestra herramienta.
+
+La observación anterior nos incentivó a realizar un nuevo experimento corriendo la herramienta durante una hora para cada host destino, bajo la suposición que al tomar mediciones durante más tiempo, las anomalías registradas se suavizarían.
+
+
+\subsubsection{Experimento 3: múltiples mediciones en paralelo, todos los hops a la vez durante una hora, identificadores de paquetes asignados al azar}
+
+Pendiente.
+
+
+\subsubsection{Experimento 4: múltiples mediciones en paralelo, todos los hops a la vez durante una hora, identificadores de paquete únicos}
+
+Pendiente.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -454,7 +476,12 @@ Debido al problema de clasificación de nodos (nodo con prioridad baja para paqu
   \emph{Internet Control Message Protocol (Artículo en Wikipedia)}.
   \url{http://en.wikipedia.org/wiki/Internet_Control_Message_Protocol},
   Mayo de 2014.
-	
+
+\bibitem{mtr}
+  \emph{\texttt{mtr}}.
+  \url{http://www.bitwizard.nl/mtr}, 
+  Mayo de 2014.
+
 \end{thebibliography}
 
 
