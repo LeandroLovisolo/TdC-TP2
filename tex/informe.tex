@@ -353,8 +353,7 @@ Por último, el traceroute realizado a \must \ muestra en su gráfico de ZRRT re
 \subsection{Heurística para detección de enlaces submarino}
 Basándonos en el análisis realizado sobre la experimentación, proponemos como umbral en las mediciones de los ZRTT relativos para la detección de enlaces sumbarinos el valor 1. El umbral propuesto creemos que es suficiente para detectar grandes variaciones en relación al desvío estándar de RTT entre nodos.
 
-Como lo planteamos anteriormente, los enlaces submarinos y los routers que asignan prioridad baja a las respuestas de paquetes ICMP muestran ambos un ZRTT alto, pero con la diferencia de que los routers que asignan una prioridad diferente hacen que el nodo siguiente tenga un ZRTT más bajo que el resto. Por este problema, la utilización de un umbral negativo para las mediciones de los ZRTT relativos, en este caso -1, resulta efectivo para descartar estos casos, en especial el del primer nodo externo.
-
+Como lo planteamos anteriormente, los enlaces submarinos y los routers que asignan prioridad baja a las respuestas de paquetes ICMP muestran ambos un ZRTT alto, pero con la diferencia de que los routers que asignan una prioridad diferente hacen que el nodo siguiente tenga un ZRTT más bajo que el resto. Si bien se destacan del resto, usar únicamente un umbral positivo sobre los ZRTT presenta problemas a la hora de decidir si realmente pertenecen a un enlace submarino.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Conclusión                                                                %%
@@ -364,6 +363,9 @@ Como lo planteamos anteriormente, los enlaces submarinos y los routers que asign
 \section{Conclusión}
 
 Podemos concluir en que la heurística basada en ZRTT's relativos funciona en casos donde es posible diferenciar un salto submarino de un router con prioridad baja de contestación de paquetes ICMP. En los casos donde el camino posee una variedad de routers que hacen diferencia en el tiempo de contestación, la identificación de los saltos puede volverse dificultosa y es probable que requiera de una base de geolocalización precisa para la resolución del problema.
+
+Debido al problema de clasificación de nodos (nodo con prioridad baja para paquetes ICMP o enlace submarino) planteamos como mejora a futuro para la heurística, la utilización de un umbral negativo para las mediciones de los ZRTT relativos, el cual parece efectivo para descartar los casos en los que se obtengan routers con prioridad baja, en especial el del primer nodo externo.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Referencias                                                               %%
