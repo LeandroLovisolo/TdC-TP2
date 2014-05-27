@@ -158,7 +158,9 @@ Petaccio, Lautaro José & 443/11 & lausuper@gmail.com\\
 
 \section{Introducción}
 
-En este trabajo estudiamos un método para detectar enlaces submarinos en la traza de paquetes entre dos hosts conectados a internet.
+En este trabajo estudiamos un método para detectar enlaces submarinos en la traza de rutas entre dos hosts conectados a internet. Basándonos en estadísticas de las rutas utilizadas, delay y geolocalización, caracterizamos nodos en el recorrido que se muestran distinguidos y planteamos un análisis de los mismos.
+
+La herramienta de traceroute existe en todos los SO modernos, y con la ayuda de la librería ScaPy presentamos una herramienta de traceroute que nos permitió generar experimentos significativos para su posterior análisis.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -361,25 +363,24 @@ Teniendo como referencia los resultados obtenidos, notamos que ocurrieron alguno
 Podemos notar, en los resultados de todas las universidades analizadas, que el segundo nodo, el primer nodo que no es nuestro gateway, posee un RTT promedio alto en comparación a los nodos más próximos a éste. Podemos deducir que esto se debe a que este router tiene una prioridad baja para las respuestas a paquetes ICMP, haciendo que las respuestas tarden más de lo esperado.
 
 \subsection{Posible error de localización}
-Otro punto a tener en cuenta, también visible en los resultados de los traceroutes a todas las universidades, es que la biblioteca elegida para la geolocalización sitúa muy probablemente la localización de los IP según la procedencia de la compañía que realice el enlace entre países. Pueden notarse en los resultados hops con bajo ZRTT relativo entre distintos países y luego el próximo nodo dentro del segundo país tiene un ZRTT relativo muy alto, indicando probablemente que se trata de un enlace de gran distancia.
+Otro punto a tener en cuenta, también visible en los resultados de todas las universidades, es que la biblioteca elegida para la geolocalización sitúa muy probablemente la localización de los IP según la procedencia de la compañía que realice el enlace entre países. Pueden notarse en los resultados hops con bajo ZRTT relativo entre distintos países y luego el próximo nodo dentro del segundo país tiene un ZRTT relativo muy alto, indicando probablemente que se trata de un enlace de gran distancia.
 
 \subsection{Promedios de RTT}
 Un dato estadístico anómalo general es el de obtener, para un determinado nodo, un RTT absoluto menor al RTT absoluto del nodo anterior, lo que significaría que llegar a este nodo toma menos tiempo que llegar al anterior. Esta anomalía se debe a que los valores del RTT absolutos se calculan mediante el promedio de los RTT obtenidos para cada nodo, pudiendo el paquete ICMP haber tomado caminos diferentes y habiendo conseguido llegar de manera apenas más rápida en promedio.
 
 \subsection{Posibles enlaces submarinos}
-En el traceroute a la universidad de Oxford podemos observar en el gráfico del ZRTT relativo como la IP 67.16.134.218 asignado a Estados Unidos obtiene un ZRTT relativo alto estando rodeado por dos nodos cuyos ZRTT son bajos y su nodo anterior sufre del problema general de la geolocalización del cuál hablamos anteriormente (el nodo debería pertenecer a un router en Argentina), podemos decir que el IP mencionado pertenece al primer router luego de un enlace submarino.
+En la traza a la universidad de Oxford podemos observar en el gráfico del ZRTT relativo como la IP 67.16.134.218 asignado a Estados Unidos obtiene un ZRTT relativo alto estando rodeado por dos nodos cuyos ZRTT son bajos y su nodo anterior sufre del problema general de la geolocalización del cuál hablamos anteriormente (el nodo debería pertenecer a un router en Argentina), podemos decir que el IP mencionado pertenece al primer router luego de un enlace submarino.
  
 Podemos observar también en el gráfico del ZRTT relativo de esta universidad como existen varios enlaces (4.69.138.123 y 4.69.202.65) de los cuales no es posible deducir con certeza la causa de sus altos valores, pero podemos especular de que, algún router posee una prioridad baja para contestar paquetes ICMP o que las IP sufren del problema de geolocalización indicado y estos saltos son entre Estados Unidos y algún país europeo y luego de el continente europeo a Reino Unido o posiblemente, una combinación de ambos (un salto a Reino unido y un router con prioridad de contestación baja). Esta deducción surge de que el análisis de los ZRTT relativos de los nodos siguientes muestra valores para los ZRTT muy bajos, incluso cuando la geolocalización muestra el cambio de paises.
  
-El traceroute a \sydney \ muestra un gráfico de ZRRT relativos satisfactorio en cuánto al análisis de saltos submarinos. Podemos notar la IP del router 67.16.139.18 que sufre del problema de geolocalización y que al obtener un ZRTT relativo alto en relación a sus nodos vecinos y al estar próximo de Argentina, es posible identificarlo como salto submarino. El próximo salto notable es el de Estado Unidos a Australia de IP 202.158.194.172, donde podemos ver que esta IP no sufre del problema de geolocalización y marca un ZRTT relativo alto entre nodos cercanos además del cambio de país. Los demás routers del traceroute, a excepción del caso general del segundo nodo en la conexión, muestran ZRTT relativos esperables y bajos al no ser saltos submarinos, dejando como distinguidos los IP mencionados.
+La ruta a \sydney \ muestra un gráfico de ZRRT relativos satisfactorio en cuánto al análisis de saltos submarinos. Podemos notar la IP del router 67.16.139.18 que sufre del problema de geolocalización y que al obtener un ZRTT relativo alto en relación a sus nodos vecinos y al estar próximo de Argentina, es posible identificarlo como salto submarino. El próximo salto notable es el de Estado Unidos a Australia de IP 202.158.194.172, donde podemos ver que esta IP no sufre del problema de geolocalización y marca un ZRTT relativo alto entre nodos cercanos además del cambio de país. Los demás routers del recorrido, a excepción del caso general del segundo nodo en la conexión, muestran ZRTT relativos esperables y bajos al no ser saltos submarinos, dejando como distinguidos los IP mencionados.
  
-Por último, el traceroute realizado a \must \ muestra en su gráfico de ZRRT relativos, además del caso general del segundo nodo con alto ZRTT, 3 IP, 67.17.192.6, 203.208.183.145 y 203.208.153.166 los cuales podemos tomar como saltos submarinos. La IP 67.17.192.6 cae en el caso de geolocalización errónea y correspondería al salto de Argentina a Estados Unidos y las IP 203.208.183.145 y 203.208.153.166 que también sufren de lo mismo y que estimamos que sus ZRTT relativos representan un salto de Estados Unidos a Singapore y de Singapore a Malasia respectivamente. Los demás IP tienen ZRTT relativos bajos, indicando comunicaciones entre nodos cercanos.
+Por último, la traza obtenida a \must \ muestra en su gráfico de ZRRT relativos, además del caso general del segundo nodo con alto ZRTT, 3 IP, 67.17.192.6, 203.208.183.145 y 203.208.153.166 los cuales podemos tomar como saltos submarinos. La IP 67.17.192.6 cae en el caso de geolocalización errónea y correspondería al salto de Argentina a Estados Unidos y las IP 203.208.183.145 y 203.208.153.166 que también sufren de lo mismo y que estimamos que sus ZRTT relativos representan un salto de Estados Unidos a Singapore y de Singapore a Malasia respectivamente. Los demás IP tienen ZRTT relativos bajos, indicando comunicaciones entre nodos cercanos.
 
 \subsection{Heurística para detección de enlaces submarino}
 Basándonos en el análisis realizado sobre la experimentación, proponemos como umbral en las mediciones de los ZRTT relativos para la detección de enlaces sumbarinos el valor 1. El umbral propuesto creemos que es suficiente para detectar grandes variaciones en relación al desvío estándar de RTT entre nodos.
 
-Como lo planteamos anteriormente, los enlaces submarinos y los routers que asignan prioridad baja a las respuestas de paquetes ICMP muestran ambos un ZRTT alto, pero con la diferencia de que los routers que asignan una prioridad diferente hacen que el nodo siguiente tenga un ZRTT más bajo que el resto. Por este problema, la utilización de un umbral negativo para las mediciones de los ZRTT relativos, en este caso -1, resulta efectivo para descartar estos casos, en especial el del primer nodo externo.
-
+Como lo planteamos anteriormente, los enlaces submarinos y los routers que asignan prioridad baja a las respuestas de paquetes ICMP muestran ambos un ZRTT alto, pero con la diferencia de que los routers que asignan una prioridad diferente hacen que el nodo siguiente tenga un ZRTT más bajo que el resto. Si bien se destacan del resto, usar únicamente un umbral positivo sobre los ZRTT presenta problemas a la hora de decidir si realmente pertenecen a un enlace submarino.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Conclusión                                                                %%
@@ -389,6 +390,9 @@ Como lo planteamos anteriormente, los enlaces submarinos y los routers que asign
 \section{Conclusión}
 
 Podemos concluir en que la heurística basada en ZRTT's relativos funciona en casos donde es posible diferenciar un salto submarino de un router con prioridad baja de contestación de paquetes ICMP. En los casos donde el camino posee una variedad de routers que hacen diferencia en el tiempo de contestación, la identificación de los saltos puede volverse dificultosa y es probable que requiera de una base de geolocalización precisa para la resolución del problema.
+
+Debido al problema de clasificación de nodos (nodo con prioridad baja para paquetes ICMP o enlace submarino) planteamos como mejora a futuro para la heurística, la utilización de un umbral negativo para las mediciones de los ZRTT relativos, el cual parece efectivo para descartar los casos en los que se obtengan routers con prioridad baja, en especial el del primer nodo externo.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Referencias                                                               %%
