@@ -365,6 +365,8 @@ El resto de este trabajo se basa en los resultados de este experimento.
 
 Los resultados presentados a continuación corresponden al experimento 4 explicado en la sección \ref{sec:experimento-4}.
 
+En todos los gráficos, el gateway presentado para cada hop es el que presenta mayor frecuencia muestral en el caso que se hubieran registrado respuestas provenientes de más de un gateway.
+
 
 \subsection{\oxford}
 
@@ -436,12 +438,12 @@ Teniendo como referencia los resultados obtenidos, notamos que ocurrieron alguno
 
 \subsection{Primer nodo externo}
 
-Podemos notar, en los resultados de todas las universidades analizadas, que el segundo nodo, el primer nodo que no es nuestro gateway, posee un RTT promedio alto en comparación a los nodos más próximos a éste. Podemos deducir que esto se debe a que este router tiene una prioridad baja para las respuestas a paquetes ICMP, haciendo que las respuestas tarden más de lo esperado.
+Podemos notar, en los resultados de todas las universidades analizadas, que el segundo hop posee un RTT promedio alto en comparación a los nodos más próximos a éste. Suponemos que esto se debe a que el gateway en ese hop tiene una prioridad baja para las respuestas a paquetes ICMP, haciendo que las respuestas tarden más de lo esperado.
 
 
 \subsection{Posible error de localización}
 
-Otro punto a tener en cuenta, también visible en los resultados de todas las universidades, es que la biblioteca elegida para la geolocalización sitúa muy probablemente la localización de los IP según la procedencia de la compañía que realice el enlace entre países. Pueden notarse en los resultados hops con bajo ZRTT relativo entre distintos países y luego el próximo nodo dentro del segundo país tiene un ZRTT relativo muy alto, indicando probablemente que se trata de un enlace de gran distancia.
+Otro punto a tener en cuenta, también visible en los resultados de todas las universidades, es que la biblioteca elegida para la geolocalización (MaxMind GeoLite City\footnote{http://dev.maxmind.com/geoip/legacy/geolite/}) sitúa muy probablemente la localización de los IP según la procedencia de la compañía que realice el enlace entre países. Pueden notarse en los resultados hops con bajo ZRTT relativo entre distintos países y luego el próximo nodo dentro del segundo país tiene un ZRTT relativo muy alto, indicando probablemente que se trata de un enlace de gran distancia.
 
 
 \subsection{Promedios de RTT}
