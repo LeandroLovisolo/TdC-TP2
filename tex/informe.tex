@@ -232,10 +232,10 @@ $$\mathit{ttl}(\mathit{identificador}) = (\mathit{identificador} - 1 \bmod 30) +
 Entonces por ejemplo, para el caso en el que $\mathit{bache} = 3$ y $\mathit{ttl} = 15$, se tiene que $\mathit{identificador}(\mathit{bache}, \mathit{ttl}) = \mathit{identificador}(3, 15) = 30 \times (3 - 1) + 15 = 75$. Luego para obtener el TTL a partir del identificador obtenido aplicando la segunda fórmula, se tiene que $\mathit{ttl}(75) = (75 - 1 \bmod 30) + 1 = (74 \bmod 30) + 1 = 14 + 1 = 15$.
 
 
-\subsubsection{Obteniendo el valor del campo \emph{Identifier} de paquete que originó una respuesta}
+\subsubsection{Obteniendo el valor del campo \emph{Identifier} del paquete que originó una respuesta}
 \label{sec:obteniendo-identifier}
 
-En el caso que un paquete ICMP de tipo Echo Request haya llegado al host destino, éste contesta enviando un paquete ICMP de tipo Echo Reply (figura \ref{fig:icmp-echo-reply}.) Este paquete también tiene un campo \emph{Identifier}, que conserva el valor del mismo campo en el paquete ICMP de tipo Echo Request que lo originó.
+En el caso en que un paquete ICMP de tipo Echo Request haya llegado al host destino, éste contesta enviando un paquete ICMP de tipo Echo Reply (figura \ref{fig:icmp-echo-reply}.) Este paquete también tiene un campo \emph{Identifier}, que conserva el valor del mismo campo en el paquete ICMP de tipo Echo Request que lo originó.
 
 \begin{figure}[H]
   \vspace{2em}
@@ -292,9 +292,9 @@ La herramienta entonces recibe paquetes ICMP de tipo Echo Reply o Time Exceeded,
 
 \subsection{Registro de mediciones y estadísticas computadas}
 
-Al finalizar la ejecución, la herramienta opcionalmente guarda a disco todas las respuestas recibidas que no fueron descartadas, junto al RTT medido para cada respuesta. En concreto, para respuesta recibida, se guardan los siguientes datos: TTL del paquete que la originó, IP del host que emitió la respuesta, tipo de la respuesta (valor del campo \emph{Type} del header ICMP) y RTT expresado en milisegundos.
+Al finalizar la ejecución, la herramienta opcionalmente guarda a disco todas las respuestas recibidas que no fueron descartadas, junto al RTT medido para cada respuesta. En concreto, para cada respuesta recibida, se guardan los siguientes datos: TTL del paquete que la originó, IP del host que emitió la respuesta, tipo de la respuesta (valor del campo \emph{Type} del header ICMP) y RTT expresado en milisegundos.
 
-Junto a la herramienta desarrollada se provee una utilidad para leer los datos guardados a discos y generar estadísticas. Las estadísticas generadas son, para cada hop, RTT promedio (el RTT promedio de todos los paquetes recibidos provenientes de ese hop) y ZRTT.
+Junto a la herramienta desarrollada se provee una utilidad para leer los datos guardados a disco y generar estadísticas. Las estadísticas generadas son, para cada hop, RTT promedio (el RTT promedio de todos los paquetes recibidos provenientes de ese hop) y ZRTT.
 
 La salida de dicha herramienta se incluye en la sección \ref{sec:resultados}.
 
@@ -328,7 +328,7 @@ La observación anterior nos incentivó a realizar un nuevo experimento corriend
 
 \subsubsection{Experimento 3: múltiples mediciones en paralelo, todos los hops a la vez durante una hora, identificadores de paquetes asignados al azar}
 
-En este caso la herramienta no sufrió modificaciones. La única variable actualizada fue el tiempo durante el que se realizaron mediciones, que ahora fue de una hora.
+En este caso la herramienta no sufrió modificaciones. La única variable actualizada fue el tiempo durante el que se realizaron mediciones, que esta vez fue de una hora.
 
 Tal como se supuso, las anomalías mencionadas en el experimento anterior se suavizaron notablemente. Sin embargo este experimento introdujo dos nuevos problemas:
 
