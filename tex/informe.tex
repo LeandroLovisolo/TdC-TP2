@@ -475,9 +475,27 @@ Como lo planteamos anteriormente, los enlaces submarinos y los routers que asign
 
 \section{Conclusión}
 
-Podemos concluir en que la heurística basada en ZRTT's relativos funciona en casos donde es posible diferenciar un salto submarino de un router con prioridad baja de contestación de paquetes ICMP. En los casos donde el camino posee una variedad de routers que hacen diferencia en el tiempo de contestación, la identificación de los saltos puede volverse dificultosa y es probable que requiera de una base de geolocalización precisa para la resolución del problema.
+Concluimos que la técnica estudiada funciona bien sólo en los casos que la traza hacia el host destino no exhibe gateways que demoran más en responder con paquetes ICMP de tipo Time Exceeded que lo que demoran en reenviar paquetes al siguiente hop en la ruta a su destino, ya que en esos casos la técnica puede producir falsos positivos.
 
-Debido al problema de clasificación de nodos (nodo con prioridad baja para paquetes ICMP o enlace submarino) planteamos como mejora a futuro para la heurística, la utilización de un umbral negativo para las mediciones de los ZRTT relativos, el cual parece efectivo para descartar los casos en los que se obtengan routers con prioridad baja, en especial el del primer nodo externo.
+En el caso general, esta técnica resulta adecuada para identificar hops candidatos a saltos submarinos, pero suele ser necesaria una etapa de análisis adicional para filtrar los falsos positivos dentro del conjunto de candidatos identificado, de manera de obtener un subconjunto compuesto únicamente por hops correspondientes a saltos submarinos.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Trabajo futuro                                                            %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Trabajo futuro}
+
+Proponemos estudiar el siguiente método para filtrar el conjunto de candidatos a saltos submarinos identificado utilizando la técnica analizada en este trabajo.
+
+En el caso en el que un hop $i$ demora más en contestar con paquetes ICMP que lo que demora en reenviar paquetes al siguiente hop en la ruta y el hop $i + 1$ se comporta normalmente, el RTT absoluto promedio del hop $i$ suele ser notablemente mayor que el del hop $i + 1$. Por lo tanto el RTT relativo promedio del hop $i + 1$ suele ser negativo, ya que su RTT absoluto promedio decrece respecto del hop anterior.
+
+De manera análoga, el ZRTT del hop $i + 1$ será negativo; éste tendrá un valor más alejado de 0 en la medida que el hop $i$ tenga un RTT absoluto mayor que el hop $i + 1$.
+
+Una posible manera de identificar los hops que demoran más en responder paquetes ICMP que lo que demoran en reenviarlos al siguiente hop es, entonces, tomar un umbral negativo para el ZRTT de todos los hops, y si un hop $i$ exhibe un ZRTT que cae por debajo de dicho umbral, entonces considerar el hop $i - 1$ como uno que presenta dicha anomalía.
+
+Suponemos que combinando esta técnica junto con la estudiada en este trabajo puede ser posible identificar conjuntos de candidatos a saltos submarinos con menos falsos positivos.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
