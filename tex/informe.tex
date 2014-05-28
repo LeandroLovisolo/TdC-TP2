@@ -433,14 +433,18 @@ Los resultados presentados a continuación corresponden al experimento 4 explica
 
 Teniendo como referencia los resultados obtenidos, notamos que ocurrieron algunos fenónemos en común que creemos vale la pena mencionar.
 
+
 \subsection{Primer nodo externo}
 Podemos notar, en los resultados de todas las universidades analizadas, que el segundo nodo, el primer nodo que no es nuestro gateway, posee un RTT promedio alto en comparación a los nodos más próximos a éste. Podemos deducir que esto se debe a que este router tiene una prioridad baja para las respuestas a paquetes ICMP, haciendo que las respuestas tarden más de lo esperado.
+
 
 \subsection{Posible error de localización}
 Otro punto a tener en cuenta, también visible en los resultados de todas las universidades, es que la biblioteca elegida para la geolocalización sitúa muy probablemente la localización de los IP según la procedencia de la compañía que realice el enlace entre países. Pueden notarse en los resultados hops con bajo ZRTT relativo entre distintos países y luego el próximo nodo dentro del segundo país tiene un ZRTT relativo muy alto, indicando probablemente que se trata de un enlace de gran distancia.
 
+
 \subsection{Promedios de RTT}
 Un dato estadístico anómalo general es el de obtener, para un determinado nodo, un RTT absoluto menor al RTT absoluto del nodo anterior, lo que significaría que llegar a este nodo toma menos tiempo que llegar al anterior. Esta anomalía se debe a que los valores del RTT absolutos se calculan mediante el promedio de los RTT obtenidos para cada nodo, pudiendo el paquete ICMP haber tomado caminos diferentes y habiendo conseguido llegar de manera apenas más rápida en promedio.
+
 
 \subsection{Posibles enlaces submarinos}
 En la traza a la universidad de Oxford podemos observar en el gráfico del ZRTT relativo como la IP 67.16.134.218 asignado a Estados Unidos obtiene un ZRTT relativo alto estando rodeado por dos nodos cuyos ZRTT son bajos y su nodo anterior sufre del problema general de la geolocalización del cuál hablamos anteriormente (el nodo debería pertenecer a un router en Argentina), podemos decir que el IP mencionado pertenece al primer router luego de un enlace submarino.
@@ -451,10 +455,12 @@ La ruta a \sydney \ muestra un gráfico de ZRRT relativos satisfactorio en cuán
  
 Por último, la traza obtenida a \must \ muestra en su gráfico de ZRRT relativos, además del caso general del segundo nodo con alto ZRTT, 3 IP, 67.17.192.6, 203.208.183.145 y 203.208.153.166 los cuales podemos tomar como saltos submarinos. La IP 67.17.192.6 cae en el caso de geolocalización errónea y correspondería al salto de Argentina a Estados Unidos y las IP 203.208.183.145 y 203.208.153.166 que también sufren de lo mismo y que estimamos que sus ZRTT relativos representan un salto de Estados Unidos a Singapore y de Singapore a Malasia respectivamente. Los demás IP tienen ZRTT relativos bajos, indicando comunicaciones entre nodos cercanos.
 
+
 \subsection{Heurística para detección de enlaces submarino}
 Basándonos en el análisis realizado sobre la experimentación, proponemos como umbral en las mediciones de los ZRTT relativos para la detección de enlaces sumbarinos el valor 1. El umbral propuesto creemos que es suficiente para detectar grandes variaciones en relación al desvío estándar de RTT entre nodos.
 
 Como lo planteamos anteriormente, los enlaces submarinos y los routers que asignan prioridad baja a las respuestas de paquetes ICMP muestran ambos un ZRTT alto, pero con la diferencia de que los routers que asignan una prioridad diferente hacen que el nodo siguiente tenga un ZRTT más bajo que el resto. Si bien se destacan del resto, usar únicamente un umbral positivo sobre los ZRTT presenta problemas a la hora de decidir si realmente pertenecen a un enlace submarino.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Conclusión                                                                %%
