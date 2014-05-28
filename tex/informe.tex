@@ -309,9 +309,9 @@ Una vez determinados los hosts destino, se hicieron experimentos con versiones a
 
 En esta primera iteración de la herramienta se enviaban simultáneamente 100 paquetes ICMP de tipo Echo Request al host destino con TTL 1 y se esperaba hasta recibir las 100 respuestas correspondientes, o bien hasta que transcurriera un segundo desde que se enviaron los paquetes. En este último caso, se descartan las mediciones correspondientes a los paquetes para los que no se recibieron respuestas. Luego se repite este proceso para los valores de TTL de 2 a 30 inclusive.
 
-Esta técnica resultó estar muy sujeta a la congestión de la red en el momento que se tomaron las mediciones. Por ejemplo, si en el instante que se envían los paquetes para el $i$-ésimo TTL la conexión a internet de la computadora desde la que se realiza la medición sufre una congestión, pero la conexión se normaliza para el instante en el que se envían los paquetes para el $(i+1)$-ésimo TTL, es posible que el RTT promedio para el $i$-ésimo hop resulte muy superior al del $(i+1)$-ésimo hop. Esta anomalía puede producir un falso positivo en la etapa de detección de enlaces submarinos más adelante en el análisis.
+Esta técnica resultó estar muy sujeta a la congestión de la red en el momento que se tomaron las mediciones. Por ejemplo, si en el instante que se envían los paquetes para el $i$-ésimo TTL la conexión a internet de la computadora desde la que se realiza la medición sufre una congestión, pero la conexión se normaliza para el instante en el que se envían los paquetes para el $(i+1)$-ésimo TTL, es posible que el RTT promedio para el $i$-ésimo hop resulte muy superior al del $(i+1)$-ésimo hop. Esta anomalía puede producir un falso positivo en la etapa de detección de enlaces submarinos más adelante en el análisis.\ref{sec:posibles-submarinos}
 
-Luego de repetir varias veces las mediciones para cada host destino y observar resultados muy distintos entre medición y medición para un mismo destino, se decidió modificar la herramienta de manera de esparcir uniformemente en el tiempo las mediciones para cada TTL, con la esperanza de suavizar las anomalías producidas por variaciones en la carga de la conexión a internet.
+Luego de repetir varias veces las mediciones para cada host destino y observar resultados muy distintos entre medición y medición para un mismo destino, se decidió modificar la herramienta de manera de distribuir uniformemente en el tiempo las mediciones para cada TTL, con la esperanza de suavizar las anomalías producidas por variaciones en la carga de la conexión a internet.
 
 
 \subsubsection{Experimento 2: múltiples mediciones en paralelo, todos los hops a la vez durante 1 minuto, identificadores de paquetes asignados al azar}
@@ -451,6 +451,7 @@ Un dato estadístico anómalo general es el de obtener, para un determinado nodo
 
 
 \subsection{Posibles enlaces submarinos}
+\label{sec:posibles-submarinos}
 
 En la traza a la universidad de Oxford podemos observar en el gráfico del ZRTT relativo como la IP 67.16.134.218 asignado a Estados Unidos obtiene un ZRTT relativo alto estando rodeado por dos nodos cuyos ZRTT son bajos y su nodo anterior sufre del problema general de la geolocalización del cuál hablamos anteriormente (el nodo debería pertenecer a un router en Argentina), podemos decir que el IP mencionado pertenece al primer router luego de un enlace submarino.
  
