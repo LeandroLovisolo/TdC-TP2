@@ -179,14 +179,13 @@ La herramienta hace uso la biblioteca Scapy \cite{scapy} para la creación y com
 
 \subsection{Medición de RTT hacia el host destino o un hop intermedio}
 
-Una medición consiste en enviar un paquete ICMP de tipo Echo Request al host destino, asignándole al paquete algún \emph{time-to-live} (TTL) entre 1 y 30 inclusive, y tomar el tiempo que transcurre desde que se envía el paquete hasta que se recibe una respuesta. Las respuestas usualmente son de alguno de los siguientes tipos:
+Una medición consiste en enviar un paquete ICMP de tipo Echo Request al host destino, asignándole al paquete algún \emph{time-to-live} (TTL) entre 1 y 30 inclusive, y tomar el tiempo que transcurre desde que se envía el paquete hasta que se recibe una respuesta. Las respuestas usualmente son de alguno de los siguientes tipos\footnote{Es posible recibir respuestas de otros tipos, como por ejemplo paquetes ICMP de tipo Destination Unreachable en el caso que no se haya podido despachar el paquete a su destino por algún motivo, pero la herramienta ignora cualquier respuesta que no sea de los dos tipos mencionados.
+}:
 
 \begin{itemize}
   \item Un paquete ICMP de tipo Echo Reply en caso que el paquete emitido alcanzara el host destino, ó
   \item Un paquete ICMP de tipo Time Exceeded en caso que el paquete agotara su TTL antes de llegar al host destino.
 \end{itemize}
-
-Es posible recibir respuestas de otros tipos, como por ejemplo paquetes ICMP de tipo Destination Unreachable en el caso que no se haya podido despachar el paquete a su destino por algún motivo, pero la herramienta ignora cualquier respuesta que no sea de los dos tipos anteriores.
 
 Para medir el RTT hacia el host destino basta con enviarle un paquete a dicho host con un TTL lo suficientemente grande para asegurar que su TTL no se agote durante el envío del paquete, esperar hasta recibir un paquete ICMP de tipo Echo Reply proveniente del host destino y registrar el tiempo transcurrido.
 
