@@ -338,6 +338,8 @@ Tal como se supuso, las anomalías mencionadas en el experimento anterior se sua
   \item En otras, ocurrió que una respuesta proveniente de un bache tardó más de un segundo en llegar al host en el que corre la herramienta. Luego, en el bache siguiente, un paquete recibió el mismo identificador que el paquete del bache anterior que originó la respuesta que tardó más de un segundo. A continuación, la respuesta del bache anterior finalmente llega al host donde corre la herramienta, y ésta la confunde con la respuesta del paquete del bache actual que recibió el identificador repetido. La herramienta entonces registra esa respuesta para el hop correspondiente al identificador en el bache actual, que puede tener un RTT muy distinto al RTT promedio de ese hop hasta el momento, afectando el promedio considerablemente.
 \end{enumerate}
 
+Suponemos que estos problemas fueron observados en este experimento y no en el anterior por el hecho de haber realizado un número mucho más grande de mediciones, lo que aumenta la probabilidad que estos fenómenos ocurrieran.
+
 Ambos problemas se solucionan generando un identificador único para cada paquete enviado a lo largo de la ejecución de la herramienta. El siguiente y último experimento incorpora dicho cambio en la herramienta.
 
 
