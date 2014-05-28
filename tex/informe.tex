@@ -317,7 +317,7 @@ Luego de repetir varias veces las mediciones para cada host destino y observar r
 
 \subsubsection{Experimento 2: múltiples mediciones en paralelo, todos los hops a la vez durante 1 minuto, identificadores de paquetes asignados al azar}
 
-Para este experimento se modificó la herramienta de forma de aplicar el procedimiento de envío de paquetes por baches a todos los hops en simultáneo descrito en la sección \ref{sec:mediciones-en-paralelo}, pero con la diferencia que se le asignó a cada paquete un identificador elegido al azar en el intervalo $[0, 65535]$ equiprobablemente.
+Para este experimento se modificó la herramienta de forma de aplicar el procedimiento de envío de paquetes por baches a todos los hops en simultáneo descrito en la sección \ref{sec:mediciones-en-paralelo}, pero con la diferencia que se le asignó a cada paquete un identificador elegido al azar en el intervalo $[0, 65535]$ equiprobablemente, y cada bache mantenía una tabla de identificadores y TTL del paquete asociado a cada identificador.
 
 Los resultados para todas las mediciones fueron más consistentes que en el experimento anterior. Sin embargo aún se registraban pequeñas anomalías, que supusimos se trataban de errores de medición.
 
@@ -328,7 +328,17 @@ La observación anterior nos incentivó a realizar un nuevo experimento corriend
 
 \subsubsection{Experimento 3: múltiples mediciones en paralelo, todos los hops a la vez durante una hora, identificadores de paquetes asignados al azar}
 
-Pendiente.
+En este caso la herramienta no sufrió modificaciones. La única variable actualizada fue el tiempo durante el que se realizaron mediciones, que ahora fue de una hora.
+
+Tal como se supuso, las anomalías mencionadas en el experimento anterior se suavizaron notablemente. Sin embargo este experimento introdujo dos nuevos problemas:
+
+\begin{enumerate}
+  \item En algunas ejecuciones de la herramienta ocurrió que dos paquetes dentro de un mismo bache recibieron el mismo identificador elegido al azar. Esto produjo que se registraran mediciones confundiendo el hop, lo que afectaba el RTT promedio de esos hops notablemente.
+
+  \item En otras, ocurrió que una respuesta proveniente de un bache tardó más de un segundo en llegar al host en el que corre la herramienta. Luego, en el bache siguiente, un paquete recibió el mismo identificador que el paquete del bache anterior que originó la respuesta que tardó más de un segundo. A continuación, la respuesta del bache anterior finalmente llega al host donde corre la herramienta, y ésta la confunde con la respuesta del paquete del bache actual que recibió el identificador repetido. La herramienta entonces registra esa respuesta para el hop correspondiente al identificador en el bache actual, que puede tener un RTT muy distinto al RTT promedio de ese hop hasta el momento, afectando el promedio considerablemente.
+\end{enumerate}
+
+Ambos problemas se solucionan generando un identificador único para cada paquete enviado a lo largo de la ejecución de la herramienta. El siguiente y último experimento incorpora dicho cambio en la herramienta.
 
 
 \subsubsection{Experimento 4: múltiples mediciones en paralelo, todos los hops a la vez durante una hora, identificadores de paquete únicos}
